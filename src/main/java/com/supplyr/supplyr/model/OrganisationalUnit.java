@@ -1,8 +1,6 @@
 package com.supplyr.supplyr.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -21,6 +19,10 @@ public class OrganisationalUnit {
                 cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("organisationalUnit")
     private List<User> users;
+
+    @OneToMany(mappedBy = "organisationalUnit", targetEntity = OrganisationalUnitAsset.class)
+    @JsonIgnoreProperties("organisationalUnit")
+    private List<OrganisationalUnitAsset> organisationalUnitAssets;
 
     public OrganisationalUnit() {
 
@@ -56,5 +58,13 @@ public class OrganisationalUnit {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public List<OrganisationalUnitAsset> getOrganisationalUnitAssets() {
+        return organisationalUnitAssets;
+    }
+
+    public void setOrganisationalUnitAssets(List<OrganisationalUnitAsset> organisationalUnitAssets) {
+        this.organisationalUnitAssets = organisationalUnitAssets;
     }
 }

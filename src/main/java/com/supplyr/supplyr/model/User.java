@@ -1,8 +1,7 @@
 package com.supplyr.supplyr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -17,7 +16,7 @@ public class User {
     @Column(unique = true, name = "username")
     private String username;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
 
