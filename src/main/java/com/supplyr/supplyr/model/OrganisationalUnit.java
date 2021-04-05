@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class OrganisationalUnit {
     private Integer credits;
 
     @OneToMany(mappedBy = "organisationalUnit", targetEntity = User.class,
-                cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+            cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties("organisationalUnit")
     private List<User> users;
 

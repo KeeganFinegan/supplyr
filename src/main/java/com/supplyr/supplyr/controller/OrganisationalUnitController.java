@@ -8,6 +8,7 @@ import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class OrganisationalUnitController {
      * Return a list of all Organisational Units
      */
     @GetMapping
-    public List<OrganisationalUnit> getOrganisationalUnits(){
+    public List<OrganisationalUnit> getOrganisationalUnits() {
         return organisationalUnitRepository.findAll();
     }
 
@@ -36,13 +37,13 @@ public class OrganisationalUnitController {
      * Return an Organisational Unit with a given Id
      */
     @GetMapping("/{organisationalUnitId}")
-    public OrganisationalUnit getOrganisationalUnitById(@PathVariable Long organisationalUnitId){
+    public OrganisationalUnit getOrganisationalUnitById(@PathVariable Long organisationalUnitId) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                 .findById(organisationalUnitId);
 
-        if(optionalOrganisationalUnit.isPresent()){
+        if (optionalOrganisationalUnit.isPresent()) {
             return optionalOrganisationalUnit.get();
-        }else {
+        } else {
             throw new NotFoundException("Could not find Organisational Unit with id " + organisationalUnitId);
         }
     }
@@ -51,14 +52,14 @@ public class OrganisationalUnitController {
      * Create a new Organisational Unit
      */
     @PostMapping()
-    public OrganisationalUnit createOrganisationalUnit(@RequestBody OrganisationalUnit organisationalUnit){
+    public OrganisationalUnit createOrganisationalUnit(@RequestBody OrganisationalUnit organisationalUnit) {
         Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
                 .findByUnitName(organisationalUnit.getName());
 
-        if(optUnit.isPresent()){
+        if (optUnit.isPresent()) {
             throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
                     + " already exists");
-        } else{
+        } else {
             return organisationalUnitRepository.save(organisationalUnit);
         }
     }

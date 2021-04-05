@@ -2,10 +2,15 @@ package com.supplyr.supplyr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.supplyr.supplyr.security.ApplicationUserRole;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
 
-@Table(name = "user_details")
+@Table(name = "users")
 @Entity
 public class User {
 
@@ -24,6 +29,9 @@ public class User {
     @JoinColumn(name = "organisational_unit_id")
     @JsonIgnoreProperties("users")
     private OrganisationalUnit organisationalUnit;
+    private boolean active;
+    private String roles;
+
 
     public User() {
     }
@@ -58,5 +66,21 @@ public class User {
 
     public void setOrganisationalUnit(OrganisationalUnit organisationalUnit) {
         this.organisationalUnit = organisationalUnit;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 }

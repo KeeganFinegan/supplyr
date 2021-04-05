@@ -64,7 +64,7 @@ public class AssetController {
      * Update the quantity of an Asset held by an Organisational Unit
      */
     @PutMapping("/assets")
-    public OrganisationalUnitAsset updateAsset(@RequestBody OrganisationalUnitAssetObject assetObject) {
+    public OrganisationalUnitAsset updateAsset(@RequestBody OrganisationalUnitAssetDto assetObject) {
         OrganisationalUnitAssetId organisationalUnitAssetId = new OrganisationalUnitAssetId(
                 assetObject.getOrganisationalUnitId(), assetObject.getAssetId()
         );
@@ -73,7 +73,6 @@ public class AssetController {
 
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                 .findById(assetObject.getOrganisationalUnitId());
-
 
          if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()){
             OrganisationalUnitAsset organisationalUnitAsset = new OrganisationalUnitAsset(

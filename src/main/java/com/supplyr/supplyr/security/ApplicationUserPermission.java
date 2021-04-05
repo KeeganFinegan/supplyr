@@ -3,8 +3,6 @@ package com.supplyr.supplyr.security;
 public enum ApplicationUserPermission {
     USER_READ("user:read"),
     USER_WRITE("user:write"),
-    ADMIN_READ("admin:read"),
-    ADMIN_WRITE("admin:write"),
     ORGANISATIONAL_UNIT_READ("organisational_unit:read"),
     ORGANISATIONAL_UNIT_WRITE("organisational_unit:write"),
     ASSET_READ("asset:read"),

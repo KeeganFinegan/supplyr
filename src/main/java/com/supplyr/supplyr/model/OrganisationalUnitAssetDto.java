@@ -1,6 +1,6 @@
 package com.supplyr.supplyr.model;
 
-public class OrganisationalUnitAssetObject {
+public class OrganisationalUnitAssetDto {
 
     private Long organisationalUnitId;
 
@@ -8,7 +8,7 @@ public class OrganisationalUnitAssetObject {
 
     private Integer quantity;
 
-    public OrganisationalUnitAssetObject() {
+    public OrganisationalUnitAssetDto() {
     }
 
     public Long getOrganisationalUnitId() {
