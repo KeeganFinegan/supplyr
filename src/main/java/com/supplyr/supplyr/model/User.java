@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "users")
@@ -31,7 +32,6 @@ public class User {
     private OrganisationalUnit organisationalUnit;
     private boolean active;
     private String roles;
-
 
     public User() {
     }
@@ -83,4 +83,5 @@ public class User {
     public void setRoles(String roles) {
         this.roles = roles;
     }
+
 }

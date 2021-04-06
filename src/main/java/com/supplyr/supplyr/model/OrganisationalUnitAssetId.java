@@ -1,5 +1,7 @@
 package com.supplyr.supplyr.model;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serial;
@@ -9,13 +11,12 @@ import java.util.Objects;
 @Embeddable
 public class OrganisationalUnitAssetId implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-
     @Column(name = "organisational_unit_id")
+    @NotNull
     private Long organisationalUnitId;
 
     @Column(name = "asset_id")
+    @NotNull
     private Long assetId;
 
     public OrganisationalUnitAssetId() {
@@ -42,16 +43,4 @@ public class OrganisationalUnitAssetId implements Serializable {
         this.assetId = assetId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrganisationalUnitAssetId that = (OrganisationalUnitAssetId) o;
-        return Objects.equals(organisationalUnitId, that.organisationalUnitId) && Objects.equals(assetId, that.assetId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(organisationalUnitId, assetId);
-    }
 }

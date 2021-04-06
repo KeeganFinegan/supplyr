@@ -59,6 +59,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/api/v1/login").permitAll()
                 .mvcMatchers("/api/v1/assets").hasRole(ApplicationUserRole.USER.name())
                 .mvcMatchers("/api/v1/users").permitAll()
+                .mvcMatchers("/api/v1/offers/sell").permitAll()
+                .mvcMatchers("/api/v1/offers/buy").permitAll()
                 .mvcMatchers("/api/v1/organisational-unit").permitAll()
                 .and()
                 .httpBasic();

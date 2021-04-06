@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Table(name = "asset")
 @Entity
@@ -11,6 +12,9 @@ public class Asset {
     private Long assetId;
 
     private String name;
+
+    @OneToMany(mappedBy = "asset",targetEntity = Offer.class)
+    private List<Offer> offers;
 
     public Asset() {
     }

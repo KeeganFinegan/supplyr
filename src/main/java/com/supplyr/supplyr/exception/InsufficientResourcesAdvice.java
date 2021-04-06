@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class AlreadyExistsAdvice {
+public class InsufficientResourcesAdvice {
 
     @ResponseBody
-    @ExceptionHandler(AlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    String alreadyExistsHandler(AlreadyExistsException ex) {
+    @ExceptionHandler(InsufficientResourcesException.class)
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    String insufficientResourcesHandler(InsufficientResourcesException ex) {
         return ex.getMessage();
     }
 }

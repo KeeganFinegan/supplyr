@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
-
-@Table(name = "organisational_unit_assets")
 @Entity
+@Table(name = "organisational_unit_assets")
 public class OrganisationalUnitAsset {
 
     @EmbeddedId
-    @JsonIgnore
     private OrganisationalUnitAssetId id;
 
     @ManyToOne()
@@ -22,12 +20,15 @@ public class OrganisationalUnitAsset {
     @JoinColumn(name = "asset_id", insertable = false, updatable = false)
     private Asset asset;
 
-    private Integer quantity;
+    private double quantity;
 
     public OrganisationalUnitAsset() {
     }
 
-    public OrganisationalUnitAsset(OrganisationalUnitAssetId id, OrganisationalUnit organisationalUnit, Asset asset, Integer quantity) {
+    public OrganisationalUnitAsset(OrganisationalUnitAssetId id,
+                                   OrganisationalUnit organisationalUnit,
+                                   Asset asset,
+                                   double quantity) {
         this.id = id;
         this.organisationalUnit = organisationalUnit;
         this.asset = asset;
@@ -58,11 +59,11 @@ public class OrganisationalUnitAsset {
         this.asset = asset;
     }
 
-    public Integer getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 }

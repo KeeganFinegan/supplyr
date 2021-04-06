@@ -6,7 +6,7 @@ public class OrganisationalUnitAssetDto {
 
     private Long assetId;
 
-    private Integer quantity;
+    private double quantity;
 
     public OrganisationalUnitAssetDto() {
     }
@@ -27,11 +27,11 @@ public class OrganisationalUnitAssetDto {
         this.assetId = assetId;
     }
 
-    public Integer getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 }

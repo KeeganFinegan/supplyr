@@ -14,7 +14,7 @@ public class OrganisationalUnit {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
-    private Integer credits;
+    private double credits;
 
     @OneToMany(mappedBy = "organisationalUnit", targetEntity = User.class,
             cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -24,6 +24,9 @@ public class OrganisationalUnit {
     @OneToMany(mappedBy = "organisationalUnit", targetEntity = OrganisationalUnitAsset.class)
     @JsonIgnoreProperties("organisationalUnit")
     private List<OrganisationalUnitAsset> organisationalUnitAssets;
+
+    @OneToMany(mappedBy = "organisationalUnit", targetEntity = Offer.class)
+    private List<Offer> offers;
 
     public OrganisationalUnit() {
 
@@ -45,11 +48,11 @@ public class OrganisationalUnit {
         this.name = name;
     }
 
-    public Integer getCredits() {
+    public double getCredits() {
         return credits;
     }
 
-    public void setCredits(Integer credits) {
+    public void setCredits(double credits) {
         this.credits = credits;
     }
 
@@ -68,4 +71,6 @@ public class OrganisationalUnit {
     public void setOrganisationalUnitAssets(List<OrganisationalUnitAsset> organisationalUnitAssets) {
         this.organisationalUnitAssets = organisationalUnitAssets;
     }
+
+
 }
