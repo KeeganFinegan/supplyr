@@ -7,14 +7,10 @@ import com.supplyr.supplyr.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @Service
 public class OfferService {
@@ -63,9 +59,9 @@ public class OfferService {
 
             if (optionalOrganisationalUnitAsset.isPresent()) {
                 OrganisationalUnitAsset offerOrganisationalUnitAsset = optionalOrganisationalUnitAsset.get();
-                if (hasSufficientAssets(offerOrganisationalUnitAsset,offerAssetQuantity)) {
+                if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
 
-                    return saveOffer(offerRequest,offerOrganisationalUnit,offerAsset,OfferType.SELL);
+                    return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
                 }
                 throw new InsufficientResourcesException(String.format("Not enough %s to complete the offer request",
                         optionalAsset.get().getName()));
@@ -90,9 +86,9 @@ public class OfferService {
             OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
 
             double creditsNeeded = offerRequest.getPrice() * offerRequest.getQuantity();
-            if (hasSufficientCredits(offerOrganisationalUnit,creditsNeeded)) {
+            if (hasSufficientCredits(offerOrganisationalUnit, creditsNeeded)) {
 
-                return saveOffer(offerRequest,offerOrganisationalUnit,offerAsset,OfferType.BUY);
+                return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
             }
             throw new InsufficientResourcesException(String
                     .format("Organisational Unit '%s' does not have sufficient funds",
@@ -102,7 +98,17 @@ public class OfferService {
 
     }
 
-    private OfferBook getOfferBook(Offer offer, HashMap<Long, OfferBook> currentOfferBook ){
+    public Offer updateOffer(Long existingOfferId, double updatedOfferQuantity) {
+        System.out.println("OFFER UPDATED");
+        return offerRepository.findById(existingOfferId)
+                .map(offer -> {
+                    offer.setQuantity(updatedOfferQuantity);
+                    return offerRepository.save(offer);
+                }).orElseThrow(() -> new NotFoundException("Could not find existing offer"));
+
+    }
+
+    private OfferBook getOfferBook(Offer offer, HashMap<Long, OfferBook> currentOfferBook) {
 
         if (!currentOfferBook.containsKey(offer.getAsset().getAssetId())) {
 
@@ -114,9 +120,9 @@ public class OfferService {
     }
 
     private Offer saveOffer(OfferRequest offerRequest,
-                          OrganisationalUnit organisationalUnit,
-                          Asset asset,
-                          OfferType offerType){
+                            OrganisationalUnit organisationalUnit,
+                            Asset asset,
+                            OfferType offerType) {
 
         Offer offer = new Offer();
         offer.setOrganisationalUnit(organisationalUnit);
@@ -128,11 +134,19 @@ public class OfferService {
 
         offerRepository.save(offer);
 
+        addOfferToOfferBook(offer);
+        return offer;
+
+    }
+
+    public void addOfferToOfferBook(Offer offer) {
+
         HashMap<Long, OfferBook> currentOfferBooks = getOfferBooks();
-        OfferBook offerBook = getOfferBook(offer,currentOfferBooks);
+        OfferBook offerBook = getOfferBook(offer, currentOfferBooks);
         offerBook.addOfferHelper(new Offer(
                 offer.getId(),
                 offer.getOrganisationalUnit(),
+                offer.getAsset(),
                 offer.getQuantity(),
                 offer.getType(),
                 offer.getPrice(),
@@ -140,7 +154,6 @@ public class OfferService {
         ));
 
         setOfferBooks(currentOfferBooks);
-        return offer;
 
     }
 
@@ -172,25 +185,24 @@ public class OfferService {
 //            }
 //        }
 //        throw new NotFoundException("Username not found");
-        return  true;
+        return true;
     }
 
     /**
      * Checks if Organisational Unit has enough credits to complete trade
      *
      * @param organisationalUnit Organisational Unit purchasing asset
-     * @param  creditsNeeded Credits needed to fulfil trade
+     * @param creditsNeeded      Credits needed to fulfil trade
      * @return True if they have sufficient credits, false if they do not
      * @throws NotFoundException When Organisational Unit does not exist
-     *
      */
-    private boolean hasSufficientCredits(OrganisationalUnit organisationalUnit, double creditsNeeded){
+    private boolean hasSufficientCredits(OrganisationalUnit organisationalUnit, double creditsNeeded) {
 
         return organisationalUnit.getCredits() >= creditsNeeded;
 
     }
 
-    private boolean hasSufficientAssets(OrganisationalUnitAsset organisationalUnitAsset , double assetQuantityNeeded){
+    private boolean hasSufficientAssets(OrganisationalUnitAsset organisationalUnitAsset, double assetQuantityNeeded) {
 
         return organisationalUnitAsset.getQuantity() > assetQuantityNeeded;
 
@@ -230,7 +242,33 @@ public class OfferService {
         }
     }
 
+    /**
+     * Loads Offers from database into Offer Book
+     */
+    public void initiateOfferQueue() {
+        List<Offer> offerList = offerRepository.findAll();
+
+        if (!offerList.isEmpty()) {
+
+            for (Offer offer : offerList) {
+
+                addOfferToOfferBook(offer);
+            }
+        }
+
+    }
+
+    /**
+     * Delete an Offer with a given id
+     *
+     * @param offerToBeDeleted Id of offer to be deleted
+     */
     public void deleteOfferById(Long offerToBeDeleted) {
-        offerRepository.deleteById(offerToBeDeleted);
+        if (offerRepository.existsById(offerToBeDeleted)) {
+            offerRepository.deleteById(offerToBeDeleted);
+        } else {
+            throw new NotFoundException(String.format("Could not find offer with id %d", offerToBeDeleted));
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.domain;
 
 import com.supplyr.supplyr.service.OfferService;
+import com.supplyr.supplyr.service.TradeService;
 import com.supplyr.supplyr.utility.BeanUtility;
 
 import java.util.*;
@@ -19,6 +20,9 @@ public class OfferBook {
 
     // Inject OfferService class into non-bean class
     OfferService offerService = BeanUtility.getBean(OfferService.class);
+
+    // Inject OfferService class into non-bean class
+    TradeService tradeService = BeanUtility.getBean(TradeService.class);
 
     /**
      * Custom constructor to override compare method for BUY and SELL priority queues
@@ -122,12 +126,18 @@ public class OfferBook {
         if (offerMap.containsKey(offerId)) {
             if (offerMap.get(offerId).getType().equals(OfferType.BUY)) {
                 buyOffers.remove(offerMap.get(offerId));
+
+
             } else {
                 sellOffers.remove(offerMap.get(offerId));
+
+
             }
             System.out.println("DELETE OFFER " + offerId);
         }
         offerMap.remove(offerId);
+
+
     }
 
     /**
@@ -139,6 +149,7 @@ public class OfferBook {
 
         // Remove any existing entry of offer with same ID
         removeExistingOffer(placedOffer.getId());
+
 
         if (!filledOffers.containsKey(placedOffer.getId())) {
             // Process BUY offer
@@ -164,11 +175,13 @@ public class OfferBook {
         if (filledOffers.containsKey(offerToBeFilled.getId())) {
             filledOffers.get(offerToBeFilled.getId()).setQuantity(filledOffers
                     .get(offerToBeFilled.getId()).getQuantity() + orderQuantity);
+
         } else {
             try {
                 Offer partialPlacedOffer = (Offer) offerToBeFilled.clone();
                 partialPlacedOffer.setQuantity(orderQuantity);
                 filledOffers.put(offerToBeFilled.getId(), partialPlacedOffer);
+
 
             } catch (CloneNotSupportedException e) {
 
@@ -178,27 +191,52 @@ public class OfferBook {
     }
 
     public void executeOfferFromQueue(Offer currentOfferFromQueue, double currentOfferFromQueueQuantity) {
+
         if (filledOffers.containsKey(currentOfferFromQueue.getId())) {
-            filledOffers.get(currentOfferFromQueue.getId()).setQuantity(filledOffers
-                    .get(currentOfferFromQueue.getId()).getQuantity() + currentOfferFromQueueQuantity);
+            double newOfferQuantity = currentOfferFromQueue.getQuantity() - currentOfferFromQueueQuantity;
+            double newTradeQuantity = filledOffers.get(currentOfferFromQueue
+                    .getId()).getQuantity() + currentOfferFromQueueQuantity;
+
+            filledOffers.get(currentOfferFromQueue.getId()).setQuantity(newTradeQuantity);
+
+
         } else {
             filledOffers.put(currentOfferFromQueue.getId(), currentOfferFromQueue);
-            offerService.deleteOfferById(currentOfferFromQueue.getId());
+
 
         }
     }
 
-    public double executeOffer(Offer placedOffer, double placedOfferQuantity, Queue offersQueue, Offer currentOfferFromQueue,
+    public double executeOffer(Offer placedOffer,
+                               double placedOfferQuantity,
+                               Queue offersQueue,
+                               Offer currentOfferFromQueue,
                                double currentOfferFromQueueQuantity) {
 
         if (currentOfferFromQueueQuantity <= placedOfferQuantity) {
             executeOfferFromQueue(currentOfferFromQueue, currentOfferFromQueueQuantity);
             offersQueue.poll();
+
             fillPartialOrders(placedOffer, currentOfferFromQueueQuantity);
             placedOfferQuantity = placedOfferQuantity - currentOfferFromQueueQuantity;
+            placedOffer.setQuantity(placedOfferQuantity);
+            tradeService.addTrade(currentOfferFromQueue, currentOfferFromQueueQuantity);
+            tradeService.addTrade(placedOffer, currentOfferFromQueueQuantity);
+            offerService.deleteOfferById(currentOfferFromQueue.getId());
+            if (placedOfferQuantity < 1) {
+                offerService.deleteOfferById(placedOffer.getId());
+            } else {
+                offerService.updateOffer(placedOffer.getId(), placedOfferQuantity);
+            }
+
         } else {
             double currentFilledSellOffer = currentOfferFromQueueQuantity - placedOfferQuantity;
             currentOfferFromQueue.setQuantity(currentFilledSellOffer);
+            tradeService.addTrade(placedOffer, placedOfferQuantity);
+            tradeService.addTrade(currentOfferFromQueue, placedOfferQuantity);
+            offerService.updateOffer(currentOfferFromQueue.getId(), currentFilledSellOffer);
+            offerService.deleteOfferById(placedOffer.getId());
+
             try {
                 Offer partialPlacedOffer = (Offer) currentOfferFromQueue.clone();
                 partialPlacedOffer.setQuantity(placedOfferQuantity);
@@ -227,6 +265,7 @@ public class OfferBook {
                     if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice()) {
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
+
                     } else {
                         break;
                     }
@@ -235,6 +274,7 @@ public class OfferBook {
                     if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()) {
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
+
                     } else {
                         break;
                     }
@@ -249,10 +289,15 @@ public class OfferBook {
                 Offer partialRemainingOffer = (Offer) placedOffer.clone();
                 partialRemainingOffer.setQuantity(placedOfferQuantity);
                 addPartialOffers.add(partialRemainingOffer);
+
+
             } catch (CloneNotSupportedException e) {
                 System.out.println("ADD ERROR");
             }
+        } else {
+
         }
+
     }
 
     /**

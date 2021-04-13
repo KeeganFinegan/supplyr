@@ -28,6 +28,7 @@ public class User {
     private String roles;
 
     public User() {
+
     }
 
     public Long getId() {
@@ -78,4 +79,15 @@ public class User {
         this.roles = roles;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", organisationalUnit=" + organisationalUnit +
+                ", active=" + active +
+                ", roles='" + roles + '\'' +
+                '}';
+    }
 }

@@ -35,12 +35,14 @@ public class Offer implements Cloneable {
 
     public Offer(Long id,
                  OrganisationalUnit organisationalUnit,
+                 Asset asset,
                  double quantity,
                  OfferType type,
                  double price,
                  LocalDateTime timestamp) {
         this.id = id;
         this.organisationalUnit = organisationalUnit;
+        this.asset = asset;
         this.quantity = quantity;
         this.type = type;
         this.price = price;
