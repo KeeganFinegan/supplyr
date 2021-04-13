@@ -1,15 +1,9 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.supplyr.supplyr.security.ApplicationUserRole;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @Table(name = "users")
 @Entity

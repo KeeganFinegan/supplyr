@@ -1,4 +1,4 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Asset {
 
     private String name;
 
-    @OneToMany(mappedBy = "asset",targetEntity = Offer.class)
+    @OneToMany(mappedBy = "asset", targetEntity = Offer.class)
     private List<Offer> offers;
 
     public Asset() {

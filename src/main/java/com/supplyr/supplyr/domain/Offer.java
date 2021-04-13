@@ -1,11 +1,11 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "offer")
-public class Offer {
+public class Offer implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +21,8 @@ public class Offer {
 
     private double quantity;
 
-    private boolean buy;
-
-    private boolean sell;
+    @Enumerated(EnumType.STRING)
+    private OfferType type;
 
     private double price;
 
@@ -32,6 +31,20 @@ public class Offer {
     private boolean fulfilled;
 
     public Offer() {
+    }
+
+    public Offer(Long id,
+                 OrganisationalUnit organisationalUnit,
+                 double quantity,
+                 OfferType type,
+                 double price,
+                 LocalDateTime timestamp) {
+        this.id = id;
+        this.organisationalUnit = organisationalUnit;
+        this.quantity = quantity;
+        this.type = type;
+        this.price = price;
+        this.timestamp = timestamp;
     }
 
     public Long getId() {
@@ -50,20 +63,12 @@ public class Offer {
         this.quantity = quantity;
     }
 
-    public boolean isBuy() {
-        return buy;
+    public OfferType getType() {
+        return type;
     }
 
-    public void setBuy(boolean buy) {
-        this.buy = buy;
-    }
-
-    public boolean isSell() {
-        return sell;
-    }
-
-    public void setSell(boolean sell) {
-        this.sell = sell;
+    public void setType(OfferType type) {
+        this.type = type;
     }
 
     public double getPrice() {
@@ -104,5 +109,24 @@ public class Offer {
 
     public void setAsset(Asset asset) {
         this.asset = asset;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "id=" + id +
+                ", organisationalUnit=" + organisationalUnit +
+                ", asset=" + asset +
+                ", quantity=" + quantity +
+                ", type=" + type +
+                ", price=" + price +
+                ", timestamp=" + timestamp +
+                ", fulfilled=" + fulfilled +
+                '}';
     }
 }

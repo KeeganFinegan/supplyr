@@ -1,8 +1,8 @@
 package com.supplyr.supplyr.controller;
 
+import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.model.*;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;

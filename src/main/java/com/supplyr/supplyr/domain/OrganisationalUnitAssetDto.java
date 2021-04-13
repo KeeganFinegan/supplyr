@@ -1,4 +1,4 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 public class OrganisationalUnitAssetDto {
 

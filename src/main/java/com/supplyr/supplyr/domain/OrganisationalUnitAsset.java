@@ -1,6 +1,4 @@
-package com.supplyr.supplyr.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.supplyr.supplyr.domain;
 
 import javax.persistence.*;
 

@@ -1,4 +1,4 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,15 +16,13 @@ public class SupplyrUserDetails implements UserDetails {
     private final boolean active;
     private final List<GrantedAuthority> grantedAuthorities;
 
-    public SupplyrUserDetails(User user){
+    public SupplyrUserDetails(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = user.isActive();
         this.grantedAuthorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-
-
     }
 
     @Override

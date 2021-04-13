@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .mvcMatchers("/api/v1/login").permitAll()
-                .mvcMatchers("/api/v1/assets").hasRole(ApplicationUserRole.USER.name())
+                .mvcMatchers("/api/v1/assets").permitAll()
                 .mvcMatchers("/api/v1/users").permitAll()
                 .mvcMatchers("/api/v1/offers/sell").permitAll()
                 .mvcMatchers("/api/v1/offers/buy").permitAll()

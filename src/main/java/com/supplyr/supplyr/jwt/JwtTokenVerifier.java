@@ -1,7 +1,10 @@
 package com.supplyr.supplyr.jwt;
 
 import com.google.common.base.Strings;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +36,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
      * Intercept incoming HTTP requests to verify the correct authorization
      * header prefix and validate the jwt token. If verified, the request is
      * passed to the next filter in the filter chain
-     * @param request Incoming Http request
+     *
+     * @param request  Incoming Http request
      * @param response Http response
      */
     @Override

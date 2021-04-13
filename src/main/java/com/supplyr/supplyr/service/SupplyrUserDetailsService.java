@@ -1,10 +1,10 @@
 package com.supplyr.supplyr.service;
 
+import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.SupplyrUserDetails;
+import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.model.OrganisationalUnit;
-import com.supplyr.supplyr.model.SupplyrUserDetails;
-import com.supplyr.supplyr.model.User;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

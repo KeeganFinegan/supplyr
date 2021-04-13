@@ -1,9 +1,7 @@
 package com.supplyr.supplyr.controller;
 
-import com.supplyr.supplyr.exception.AlreadyExistsException;
+import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.model.OrganisationalUnit;
-import com.supplyr.supplyr.model.User;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -12,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -50,7 +47,7 @@ public class UserController {
      */
     @PostMapping("/{organisationalUnit}")
     public User createUser(@PathVariable String organisationalUnit, @RequestBody User user) {
-       return supplyrUserDetailsService.registerNewUser(organisationalUnit,user);
+        return supplyrUserDetailsService.registerNewUser(organisationalUnit, user);
 
     }
 

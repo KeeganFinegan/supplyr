@@ -1,13 +1,14 @@
 package com.supplyr.supplyr.controller;
 
+import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.model.*;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class AssetController {
      * Return a list of all Assets
      */
     @GetMapping("/assets")
-    public List<Asset> getAllAssets(){
+    public List<Asset> getAllAssets() {
         return assetRepository.findAll();
     }
 
@@ -36,11 +37,11 @@ public class AssetController {
      * Return Asset with a given Id
      */
     @GetMapping("/assets/{id}")
-    public Asset getAssetById(@PathVariable Long id){
+    public Asset getAssetById(@PathVariable Long id) {
 
-        if(assetRepository.existsById(id)){
+        if (assetRepository.existsById(id)) {
             return assetRepository.findById(id).get();
-        }else {
+        } else {
             throw new NotFoundException("Could not find asset with id " + id);
         }
     }
@@ -49,13 +50,14 @@ public class AssetController {
      * Add new Asset type
      */
     @PostMapping("/assets")
-    public Asset addAssetType(@RequestBody Asset asset){
+    public Asset addAssetType(@RequestBody Asset asset) {
         Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
 
-        if (optAsset.isPresent()){
+        if (optAsset.isPresent()) {
             throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
 
         }
+
         return assetRepository.save(asset);
 
     }
@@ -74,7 +76,7 @@ public class AssetController {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                 .findById(assetObject.getOrganisationalUnitId());
 
-         if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()){
+        if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()) {
             OrganisationalUnitAsset organisationalUnitAsset = new OrganisationalUnitAsset(
                     organisationalUnitAssetId, optionalOrganisationalUnit.get(), optionalAsset.get(),
                     assetObject.getQuantity()

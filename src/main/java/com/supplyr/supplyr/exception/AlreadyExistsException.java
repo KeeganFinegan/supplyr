@@ -1,13 +1,13 @@
 package com.supplyr.supplyr.exception;
 
 
-public class AlreadyExistsException extends RuntimeException{
+public class AlreadyExistsException extends RuntimeException {
 
-    public AlreadyExistsException(String message){
+    public AlreadyExistsException(String message) {
         super(message);
     }
 
-    public AlreadyExistsException(String message, Throwable cause){
+    public AlreadyExistsException(String message, Throwable cause) {
         super(message, cause);
     }
 

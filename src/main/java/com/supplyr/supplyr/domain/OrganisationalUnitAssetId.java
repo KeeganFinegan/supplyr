@@ -1,12 +1,10 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 import com.sun.istack.NotNull;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
 public class OrganisationalUnitAssetId implements Serializable {

@@ -1,8 +1,9 @@
-package com.supplyr.supplyr.model;
+package com.supplyr.supplyr.domain;
 
 public class OfferRequest {
     private Long assetId;
     private Long organisationalUnitId;
+    private Long userId;
     private double quantity;
     private double price;
 
@@ -39,5 +40,13 @@ public class OfferRequest {
 
     public void setOrganisationalUnitId(Long organisationalUnitId) {
         this.organisationalUnitId = organisationalUnitId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

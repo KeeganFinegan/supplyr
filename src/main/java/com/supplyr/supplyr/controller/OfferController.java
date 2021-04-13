@@ -1,7 +1,7 @@
 package com.supplyr.supplyr.controller;
 
-import com.supplyr.supplyr.model.Offer;
-import com.supplyr.supplyr.model.OfferRequest;
+import com.supplyr.supplyr.domain.Offer;
+import com.supplyr.supplyr.domain.OfferRequest;
 import com.supplyr.supplyr.service.OfferService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ public class OfferController {
      * Add a new SELL offer
      */
     @PostMapping("/sell")
-    public Offer addSellOffer(@RequestBody OfferRequest offerRequest){
+    public Offer addSellOffer(@RequestBody OfferRequest offerRequest) {
         return offerService.addSellOffer(offerRequest);
 
     }
@@ -32,7 +32,7 @@ public class OfferController {
      * Add a new SELL offer
      */
     @PostMapping("/buy")
-    public Offer addBuyOffer(@RequestBody OfferRequest offerRequest){
+    public Offer addBuyOffer(@RequestBody OfferRequest offerRequest) {
         return offerService.addBuyOffer(offerRequest);
 
     }
