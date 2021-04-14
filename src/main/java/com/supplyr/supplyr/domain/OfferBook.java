@@ -1,6 +1,8 @@
 package com.supplyr.supplyr.domain;
 
+import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OfferService;
+import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.TradeService;
 import com.supplyr.supplyr.utility.BeanUtility;
 
@@ -23,6 +25,12 @@ public class OfferBook {
 
     // Inject OfferService class into non-bean class
     TradeService tradeService = BeanUtility.getBean(TradeService.class);
+
+    // Inject OfferService class into non-bean class
+    AssetService assetService = BeanUtility.getBean(AssetService.class);
+
+    // Inject OfferService class into non-bean class
+    OrganisationalUnitService organisationalUnitService = BeanUtility.getBean(OrganisationalUnitService.class);
 
     /**
      * Custom constructor to override compare method for BUY and SELL priority queues
@@ -221,7 +229,9 @@ public class OfferBook {
             placedOfferQuantity = placedOfferQuantity - currentOfferFromQueueQuantity;
             placedOffer.setQuantity(placedOfferQuantity);
             tradeService.addTrade(currentOfferFromQueue, currentOfferFromQueueQuantity);
+            executeTrade(currentOfferFromQueue, currentOfferFromQueueQuantity);
             tradeService.addTrade(placedOffer, currentOfferFromQueueQuantity);
+            executeTrade(placedOffer, currentOfferFromQueueQuantity);
             offerService.deleteOfferById(currentOfferFromQueue.getId());
             if (placedOfferQuantity < 1) {
                 offerService.deleteOfferById(placedOffer.getId());
@@ -233,7 +243,9 @@ public class OfferBook {
             double currentFilledSellOffer = currentOfferFromQueueQuantity - placedOfferQuantity;
             currentOfferFromQueue.setQuantity(currentFilledSellOffer);
             tradeService.addTrade(placedOffer, placedOfferQuantity);
+            executeTrade(placedOffer, placedOfferQuantity);
             tradeService.addTrade(currentOfferFromQueue, placedOfferQuantity);
+            executeTrade(currentOfferFromQueue, placedOfferQuantity);
             offerService.updateOffer(currentOfferFromQueue.getId(), currentFilledSellOffer);
             offerService.deleteOfferById(placedOffer.getId());
 
@@ -262,7 +274,10 @@ public class OfferBook {
                 double currentOfferFromQueueQuantity = currentOfferFromQueue.getQuantity();
                 // Execute BUY offer if the price is accepted by queue offer
                 if (placedOffer.getType().equals(OfferType.BUY)) {
+
                     if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice()) {
+
+                        currentOfferFromQueue.setPrice(placedOffer.getPrice());
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
 
@@ -271,6 +286,7 @@ public class OfferBook {
                     }
                     // Execute SELL offer if the price is accepted by queue offer
                 } else {
+                    placedOffer.setPrice(currentOfferFromQueue.getPrice());
                     if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()) {
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
@@ -300,6 +316,41 @@ public class OfferBook {
 
     }
 
+    private void executeTrade(Offer offer, double quantity) {
+
+        OrganisationalUnitAssetDto assetObject = new OrganisationalUnitAssetDto();
+        assetObject.setAssetId(offer.getAsset().getAssetId());
+        assetObject.setOrganisationalUnitId(offer.getOrganisationalUnit().getId());
+
+        double creditAmount;
+        // Execute BUY trade
+        if (offer.getType() == OfferType.BUY) {
+
+            // Deduct credit amount
+            creditAmount = offer.getPrice() * quantity * -1;
+            organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
+                    creditAmount);
+
+            // Add assets purchased
+            assetObject.setQuantity(quantity);
+            assetService.updateOrganisationalUnitAsset(assetObject);
+            // Execute SELL trade
+        } else {
+
+            // Add credit amount
+            creditAmount = offer.getPrice() * quantity;
+            organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
+                    creditAmount);
+
+            // Deduct assets sold
+            assetObject.setQuantity(quantity * -1);
+            assetService.updateOrganisationalUnitAsset(assetObject);
+
+        }
+
+
+    }
+
     /**
      * Determine if two orders can be executed
      *
@@ -313,11 +364,6 @@ public class OfferBook {
         } else {
             return true;
         }
-    }
-
-    private void executeTrade(Offer offerTraded) {
-
-
     }
 
 

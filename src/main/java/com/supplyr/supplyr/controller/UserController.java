@@ -1,7 +1,6 @@
 package com.supplyr.supplyr.controller;
 
 import com.supplyr.supplyr.domain.User;
-import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -43,7 +42,11 @@ public class UserController {
     }
 
     /**
-     * Create a new User
+     * Register a new User
+     *
+     * @param organisationalUnit Organisational Unit that the user is to be a member of
+     * @param user               User to be registered
+     * @return User that was registered
      */
     @PostMapping("/{organisationalUnit}")
     public User createUser(@PathVariable String organisationalUnit, @RequestBody User user) {
@@ -53,27 +56,23 @@ public class UserController {
 
     /**
      * Update the details of User with a given Id
+     *
+     * @param userId      Id of User to be updated
+     * @param updatedUser Updated details of User
+     * @return Updated User
      */
     @PutMapping("/{userId}")
     public User updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
-        return userRepository.findById(userId)
-                .map(user -> {
-                    user.setUsername(updatedUser.getUsername());
-                    user.setPassword(updatedUser.getPassword());
-                    user.setOrganisationalUnit(updatedUser.getOrganisationalUnit());
-                    return userRepository.save(user);
-                }).orElseThrow(() -> new NotFoundException("Could not find student with id " + userId));
+        return supplyrUserDetailsService.updateUser(userId, updatedUser);
     }
 
     /**
      * Delete a User with a given Id
+     *
+     * @param userId Id of User to be deleted
      */
     @DeleteMapping("/{userId}")
-    public String deleteStudent(@PathVariable Long userId) {
-        return userRepository.findById(userId)
-                .map(user -> {
-                    userRepository.delete(user);
-                    return "Deleted Successfully!";
-                }).orElseThrow(() -> new NotFoundException("Student not found with id " + userId));
+    public void deleteStudent(@PathVariable Long userId) {
+        supplyrUserDetailsService.deleteStudent(userId);
     }
 }

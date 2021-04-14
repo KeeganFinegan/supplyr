@@ -38,6 +38,13 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
     }
 
+    /**
+     * Add new user into the database
+     *
+     * @param organisationalUnit Organisational Unit that the user is to be a member of
+     * @param user               User to be registered
+     * @return User that was registered
+     */
     public User registerNewUser(String organisationalUnit, User user) {
         Optional<OrganisationalUnit> optUnit = organisationalUnitRepository.findByUnitName(organisationalUnit);
         Optional<User> optUser = userRepository.findByUsername(user.getUsername());
@@ -54,6 +61,36 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
         } else {
             throw new NotFoundException("Could not find Organisational Unit " + organisationalUnit);
+        }
+    }
+
+    /**
+     * Update the details of User with a given Id in the database
+     *
+     * @param userId      Id of User to be updated
+     * @param updatedUser Updated details of User
+     * @return Updated User
+     */
+    public User updateUser(Long userId, User updatedUser) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    user.setUsername(updatedUser.getUsername());
+                    user.setPassword(updatedUser.getPassword());
+                    user.setOrganisationalUnit(updatedUser.getOrganisationalUnit());
+                    return userRepository.save(user);
+                }).orElseThrow(() -> new NotFoundException("Could not find student with id " + userId));
+    }
+
+    /**
+     * Delete a User with a given id from the database
+     *
+     * @param userId Id of User to be deleted
+     */
+    public void deleteStudent(Long userId) {
+        if (userRepository.existsById(userId)) {
+            userRepository.deleteById(userId);
+        } else {
+            throw new NotFoundException(String.format("Could not find user with id %d", userId));
         }
     }
 }

@@ -1,66 +1,61 @@
 package com.supplyr.supplyr.controller;
 
 import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.exception.AlreadyExistsException;
-import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.repository.AssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
+import com.supplyr.supplyr.service.OrganisationalUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("api/v1/organisational-unit")
 public class OrganisationalUnitController {
 
     @Autowired
-    OrganisationalUnitRepository organisationalUnitRepository;
-
-    @Autowired
-    OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
-
-    @Autowired
-    AssetRepository assetRepository;
+    OrganisationalUnitService organisationalUnitService;
 
     /**
      * Return a list of all Organisational Units
+     *
+     * @return List of all Organisational Units
      */
     @GetMapping
     public List<OrganisationalUnit> getOrganisationalUnits() {
-        return organisationalUnitRepository.findAll();
+        return organisationalUnitService.getOrganisationalUnits();
     }
 
     /**
      * Return an Organisational Unit with a given Id
+     *
+     * @param organisationalUnitId Id of Organisational Unit to be returned
+     * @return Organisational Unit that was queried
      */
     @GetMapping("/{organisationalUnitId}")
     public OrganisationalUnit getOrganisationalUnitById(@PathVariable Long organisationalUnitId) {
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(organisationalUnitId);
-
-        if (optionalOrganisationalUnit.isPresent()) {
-            return optionalOrganisationalUnit.get();
-        } else {
-            throw new NotFoundException("Could not find Organisational Unit with id " + organisationalUnitId);
-        }
+        return organisationalUnitService.getOrganisationalUnitById(organisationalUnitId);
     }
 
     /**
      * Create a new Organisational Unit
+     *
+     * @param organisationalUnit Organisational Unit to be added
+     * @return Organisational unit that was added
      */
     @PostMapping()
     public OrganisationalUnit createOrganisationalUnit(@RequestBody OrganisationalUnit organisationalUnit) {
-        Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
-                .findByUnitName(organisationalUnit.getName());
-
-        if (optUnit.isPresent()) {
-            throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
-                    + " already exists");
-        } else {
-            return organisationalUnitRepository.save(organisationalUnit);
-        }
+        return organisationalUnitService.createOrganisationalUnit(organisationalUnit);
     }
+
+    /**
+     * Delete existing Organisational Unit
+     *
+     * @param organisationalUnitId Id of Organisational Unit to be deleted
+     */
+    @DeleteMapping
+    public void deleteOrganisationalUnit(@PathVariable Long organisationalUnitId) {
+        organisationalUnitService.deleteById(organisationalUnitId);
+    }
+
+
 }

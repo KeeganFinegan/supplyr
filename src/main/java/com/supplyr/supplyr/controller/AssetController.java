@@ -1,89 +1,63 @@
 package com.supplyr.supplyr.controller;
 
-import com.supplyr.supplyr.domain.*;
-import com.supplyr.supplyr.exception.AlreadyExistsException;
-import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.repository.AssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
+import com.supplyr.supplyr.domain.Asset;
+import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
+import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
+import com.supplyr.supplyr.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class AssetController {
 
     @Autowired
-    AssetRepository assetRepository;
+    AssetService assetService;
 
-    @Autowired
-    OrganisationalUnitRepository organisationalUnitRepository;
-
-    @Autowired
-    OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
     /**
      * Return a list of all Assets
      */
     @GetMapping("/assets")
     public List<Asset> getAllAssets() {
-        return assetRepository.findAll();
+        return assetService.getAllAssets();
     }
 
     /**
      * Return Asset with a given Id
+     *
+     * @param assetId Id of Asset to be retrieved
+     * @return Asset that was queried
      */
-    @GetMapping("/assets/{id}")
-    public Asset getAssetById(@PathVariable Long id) {
+    @GetMapping("/assets/{assetId}")
+    public Asset getAssetById(@PathVariable Long assetId) {
 
-        if (assetRepository.existsById(id)) {
-            return assetRepository.findById(id).get();
-        } else {
-            throw new NotFoundException("Could not find asset with id " + id);
-        }
+        return assetService.getAssetById(assetId);
     }
 
     /**
      * Add new Asset type
+     *
+     * @param asset Asset to be added
+     * @return Asset that was added
      */
     @PostMapping("/assets")
     public Asset addAssetType(@RequestBody Asset asset) {
-        Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
-
-        if (optAsset.isPresent()) {
-            throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
-
-        }
-
-        return assetRepository.save(asset);
+        return assetService.addAssetType(asset);
 
     }
 
     /**
      * Update the quantity of an Asset held by an Organisational Unit
+     *
+     * @param assetObject Details of asset to be updated
+     * @return Organisational Unit Asset that was updated
      */
     @PutMapping("/assets")
-    public OrganisationalUnitAsset updateAsset(@RequestBody OrganisationalUnitAssetDto assetObject) {
-        OrganisationalUnitAssetId organisationalUnitAssetId = new OrganisationalUnitAssetId(
-                assetObject.getOrganisationalUnitId(), assetObject.getAssetId()
-        );
-
-        Optional<Asset> optionalAsset = assetRepository.findById(assetObject.getAssetId());
-
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(assetObject.getOrganisationalUnitId());
-
-        if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()) {
-            OrganisationalUnitAsset organisationalUnitAsset = new OrganisationalUnitAsset(
-                    organisationalUnitAssetId, optionalOrganisationalUnit.get(), optionalAsset.get(),
-                    assetObject.getQuantity()
-            );
-            return organisationalUnitAssetRepository.save(organisationalUnitAsset);
-        }
-        throw new NotFoundException("No such asset or Organisational Unit exists");
+    public OrganisationalUnitAsset addOrganisationalUnitAsset(@RequestBody OrganisationalUnitAssetDto assetObject) {
+        return assetService.addOrganisationalUnitAsset(assetObject);
 
     }
 }
