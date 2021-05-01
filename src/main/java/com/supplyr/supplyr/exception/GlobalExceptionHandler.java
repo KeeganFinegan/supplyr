@@ -1,18 +1,23 @@
 package com.supplyr.supplyr.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class NotFoundAdvice {
+public class GlobalExceptionHandler {
 
     @ResponseBody
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    ErrorDetails notFoundHandler(NotFoundException ex) {
-        return new ErrorDetails(HttpStatus.NOT_FOUND,"NotFoundException",ex.getMessage());
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    String unAuthorizedHandler(UnauthorizedException ex) {
+        return ex.getMessage();
     }
+
+
+
 }

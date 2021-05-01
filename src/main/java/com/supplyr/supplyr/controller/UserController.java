@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.controller;
 
 import com.supplyr.supplyr.domain.User;
+import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -34,10 +35,17 @@ public class UserController {
     /**
      * Return a User with a given Id
      */
-    @GetMapping("/{userId}")
+//    @GetMapping("/{username}")
+//    @ResponseBody
+//    public UserDetails getUserDetailsByUsername(@PathVariable String username) {
+//        return supplyrUserDetailsService.loadUserByUsername(username);
+//
+//    }
+
+    @GetMapping("/{username}")
     @ResponseBody
-    public UserDetails getUserById(@PathVariable String username) {
-        return supplyrUserDetailsService.loadUserByUsername(username);
+    public User getUseObjectByUsername(@PathVariable String username) {
+        return supplyrUserDetailsService.getUserByUsername(username);
 
     }
 
@@ -50,7 +58,22 @@ public class UserController {
      */
     @PostMapping("/{organisationalUnit}")
     public User createUser(@PathVariable String organisationalUnit, @RequestBody User user) {
+
         return supplyrUserDetailsService.registerNewUser(organisationalUnit, user);
+
+
+
+    }
+
+    /**
+     * Register a new admin User
+     *
+     * @param user               User to be registered
+     * @return User that was registered
+     */
+    @PostMapping("/admin")
+    public User createAdmin( @RequestBody User user) {
+        return supplyrUserDetailsService.registerNewAdmin(user);
 
     }
 

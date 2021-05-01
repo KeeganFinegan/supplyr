@@ -5,6 +5,9 @@ import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.TradeService;
 import com.supplyr.supplyr.utility.BeanUtility;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -158,8 +161,10 @@ public class OfferBook {
         // Remove any existing entry of offer with same ID
         removeExistingOffer(placedOffer.getId());
 
-
-        if (!filledOffers.containsKey(placedOffer.getId())) {
+        if (placedOffer.getPrice() < 1 || placedOffer.getQuantity() < 1){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid order price or quantity");
+        }
+        else if (!filledOffers.containsKey(placedOffer.getId())) {
             // Process BUY offer
             if (placedOffer.getType().equals(OfferType.BUY)) {
                 addOffer(placedOffer, sellOffers, buyOffers);
@@ -178,7 +183,7 @@ public class OfferBook {
      * @param offerToBeFilled offer to be partially fulfilled
      * @param orderQuantity   quantity to be partially fulfilled
      */
-    public void fillPartialOrders(Offer offerToBeFilled, double orderQuantity) {
+    private void fillPartialOrders(Offer offerToBeFilled, double orderQuantity) {
 
         if (filledOffers.containsKey(offerToBeFilled.getId())) {
             filledOffers.get(offerToBeFilled.getId()).setQuantity(filledOffers
@@ -198,7 +203,7 @@ public class OfferBook {
         }
     }
 
-    public void executeOfferFromQueue(Offer currentOfferFromQueue, double currentOfferFromQueueQuantity) {
+    private void executeOfferFromQueue(Offer currentOfferFromQueue, double currentOfferFromQueueQuantity) {
 
         if (filledOffers.containsKey(currentOfferFromQueue.getId())) {
             double newOfferQuantity = currentOfferFromQueue.getQuantity() - currentOfferFromQueueQuantity;
@@ -215,7 +220,7 @@ public class OfferBook {
         }
     }
 
-    public double executeOffer(Offer placedOffer,
+    private double executeOffer(Offer placedOffer,
                                double placedOfferQuantity,
                                Queue offersQueue,
                                Offer currentOfferFromQueue,
@@ -263,7 +268,7 @@ public class OfferBook {
 
     }
 
-    public void addOffer(Offer placedOffer, Queue<Offer> offersQueue, Queue<Offer> addPartialOffers) {
+    private void addOffer(Offer placedOffer, Queue<Offer> offersQueue, Queue<Offer> addPartialOffers) {
         double placedOfferQuantity = placedOffer.getQuantity();
 
         while (!offersQueue.isEmpty() && placedOfferQuantity != 0) {

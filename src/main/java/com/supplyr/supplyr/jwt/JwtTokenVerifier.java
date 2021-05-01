@@ -1,15 +1,18 @@
 package com.supplyr.supplyr.jwt;
 
 import com.google.common.base.Strings;
+import com.supplyr.supplyr.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
@@ -76,8 +79,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        } catch (JwtException e) {
-            throw new JwtException(e.getMessage());
+        } catch (Exception e) {
+            throw new UnauthorizedException("User not authorized");
         }
         filterChain.doFilter(request, response);
 

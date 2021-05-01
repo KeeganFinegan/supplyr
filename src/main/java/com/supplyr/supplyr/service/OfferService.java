@@ -30,7 +30,7 @@ public class OfferService {
 
     public HashMap<Long, OfferBook> getOfferBooks() {
         if (offerBooks == null) {
-            System.out.println("CREATED OFFER BOOKS");
+
             return new HashMap<Long, OfferBook>();
         }
         return offerBooks;
@@ -42,10 +42,10 @@ public class OfferService {
 
     public Offer addSellOffer(OfferRequest offerRequest) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(offerRequest.getOrganisationalUnitId());
+                .findByUnitName(offerRequest.getOrganisationalUnit());
 
         Optional<Asset> optionalAsset = assetRepository
-                .findById(offerRequest.getAssetId());
+                .findByName(offerRequest.getAsset());
 
         if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent() && isValidUser(offerRequest)) {
 
@@ -67,8 +67,8 @@ public class OfferService {
                         optionalAsset.get().getName()));
 
             }
-            throw new NotFoundException(String.format("Organisational Unit %s does not possess asset with id %d",
-                    optionalOrganisationalUnit.get().getName(), offerRequest.getAssetId()));
+            throw new NotFoundException(String.format("Organisational Unit %s does not possess %s",
+                    optionalOrganisationalUnit.get().getName(), offerRequest.getAsset()));
 
         }
         throw new NotFoundException("Organisational Unit or Asset Type does not exist");
@@ -76,9 +76,9 @@ public class OfferService {
 
     public Offer addBuyOffer(OfferRequest offerRequest) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(offerRequest.getOrganisationalUnitId());
+                .findByUnitName(offerRequest.getOrganisationalUnit());
         Optional<Asset> optionalAsset = assetRepository
-                .findById(offerRequest.getAssetId());
+                .findByName(offerRequest.getAsset());
 
         if (optionalOrganisationalUnit.isPresent() && optionalAsset.isPresent() && isValidUser(offerRequest)) {
 
@@ -150,7 +150,7 @@ public class OfferService {
                 offer.getQuantity(),
                 offer.getType(),
                 offer.getPrice(),
-                LocalDateTime.now()
+                offer.getTimestamp()
         ));
 
         setOfferBooks(currentOfferBooks);
@@ -265,7 +265,17 @@ public class OfferService {
      */
     public void deleteOfferById(Long offerToBeDeleted) {
         if (offerRepository.existsById(offerToBeDeleted)) {
-            offerRepository.deleteById(offerToBeDeleted);
+
+            Optional<Offer> optionalOffer = offerRepository.findById(offerToBeDeleted);
+            if (optionalOffer.isPresent()){
+                HashMap<Long, OfferBook> currentOfferBooks = getOfferBooks();
+                OfferBook offerBook = getOfferBook(optionalOffer.get(), currentOfferBooks);
+                offerBook.removeExistingOffer(offerToBeDeleted);
+                offerRepository.deleteById(offerToBeDeleted);
+
+            }
+
+
         } else {
             throw new NotFoundException(String.format("Could not find offer with id %d", offerToBeDeleted));
         }

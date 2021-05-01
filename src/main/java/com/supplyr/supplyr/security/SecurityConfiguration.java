@@ -7,6 +7,7 @@ import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.crypto.SecretKey;
 
@@ -46,6 +49,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -57,15 +62,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .mvcMatchers("/api/v1/login").permitAll()
-                .mvcMatchers("/api/v1/assets").permitAll()
-                .mvcMatchers("/api/v1/users").permitAll()
-                .mvcMatchers("/api/v1/offers/sell").permitAll()
-                .mvcMatchers("/api/v1/offers/buy").permitAll()
-                .mvcMatchers("/api/v1/organisational-unit").permitAll()
-                .and()
-                .httpBasic();
+                .mvcMatchers("/api/v1/assets").hasAnyRole("USER","ADMIN")
+                .mvcMatchers(HttpMethod.GET,"/api/v1/users").hasAnyRole("USER","ADMIN")
+                .mvcMatchers(HttpMethod.POST,"/api/v1/users/**").hasAnyRole("ADMIN")
+                .mvcMatchers("/api/v1/offers/**").hasAnyRole("USER","ADMIN")
+                .mvcMatchers("/api/v1/organisational-unit").hasAnyRole("USER","ADMIN");
+
+
+
 
     }
+
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
@@ -74,6 +82,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(supplyrUserDetailsService);
         return provider;
 
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowCredentials(true);
+            }
+        };
     }
 
 }

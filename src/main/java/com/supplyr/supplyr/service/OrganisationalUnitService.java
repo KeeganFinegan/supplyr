@@ -70,14 +70,14 @@ public class OrganisationalUnitService {
 
     }
 
-    public OrganisationalUnit updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount){
+    public OrganisationalUnit updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
         return organisationalUnitRepository
                 .findById(organisationalUnitId).map(organisationalUnit -> {
-                organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
-                return organisationalUnit;
-            }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "
+                    organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
+                    return organisationalUnit;
+                }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "
                         , organisationalUnitId)));
-        }
+    }
 
     /**
      * Delete Organisational Unit from database

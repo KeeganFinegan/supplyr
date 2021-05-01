@@ -12,7 +12,7 @@ public class AlreadyExistsAdvice {
     @ResponseBody
     @ExceptionHandler(AlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    String alreadyExistsHandler(AlreadyExistsException ex) {
-        return ex.getMessage();
+    ErrorDetails alreadyExistsHandler(AlreadyExistsException ex) {
+        return new ErrorDetails(HttpStatus.CONFLICT,"AlreadyExistsException",ex.getMessage());
     }
 }

@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.security.AuthenticationRequest;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -35,6 +37,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         setFilterProcessesUrl("/api/v1/login");
     }
 
+    /**
+     * Attempt authentication of username and password
+     *
+     * @param request  Authentication request
+     * @param response Authentication request
+     * @return authentication manager
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -47,8 +56,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                     authenticationRequest.getPassword()
             );
             return authenticationManager.authenticate(authentication);
-        } catch (IOException e) {
-            throw new RuntimeException();
+        } catch (Exception e) {
+            throw new UnauthorizedException("User not authorized");
         }
 
     }
@@ -59,6 +68,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             FilterChain chain,
                                             Authentication authResult) throws IOException {
         // Generate jwt token and write it to the response body
+
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
@@ -67,7 +77,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                         .plusDays(jwtConfiguration.getTokenExpirationAfter())))
                 .signWith(secretKey)
                 .compact();
-        response.getWriter().write(jwtConfiguration.getTokenPrefix() + token);
-        response.getWriter().flush();
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print(String.format("{\"token\": \"%s\"}", token));
+
+        out.flush();
     }
+
+
 }

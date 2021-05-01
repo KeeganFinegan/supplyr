@@ -38,6 +38,8 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
     }
 
+
+
     /**
      * Add new user into the database
      *
@@ -62,6 +64,28 @@ public class SupplyrUserDetailsService implements UserDetailsService {
         } else {
             throw new NotFoundException("Could not find Organisational Unit " + organisationalUnit);
         }
+    }
+
+
+    public User registerNewAdmin(User user ) {
+
+        Optional<OrganisationalUnit> optUnit = organisationalUnitRepository.findByUnitName("Supplyr Admin");
+        Optional<User> optUser = userRepository.findByUsername(user.getUsername());
+        if (optUnit.isPresent() && optUser.isEmpty()) {
+
+            user.setOrganisationalUnit(optUnit.get());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setActive(true);
+            user.setRoles("ROLE_ADMIN");
+            return userRepository.save(user);
+
+        } else if (optUnit.isPresent()) {
+            throw new AlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
+
+        } else {
+            throw new NotFoundException("Could not find Organisational Unit Supplyr Admin" );
+        }
+
     }
 
     /**
@@ -92,5 +116,13 @@ public class SupplyrUserDetailsService implements UserDetailsService {
         } else {
             throw new NotFoundException(String.format("Could not find user with id %d", userId));
         }
+    }
+
+    public User getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+
+        user.orElseThrow(() -> new UsernameNotFoundException("Could not find user with username " + username));
+
+        return user.get();
     }
 }

@@ -3,10 +3,7 @@ package com.supplyr.supplyr.controller;
 import com.supplyr.supplyr.domain.Offer;
 import com.supplyr.supplyr.domain.OfferRequest;
 import com.supplyr.supplyr.service.OfferService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/offers")
@@ -24,6 +21,7 @@ public class OfferController {
      */
     @PostMapping("/sell")
     public Offer addSellOffer(@RequestBody OfferRequest offerRequest) {
+        //TODO: check for negative price and quantity
         return offerService.addSellOffer(offerRequest);
 
     }
@@ -33,8 +31,15 @@ public class OfferController {
      */
     @PostMapping("/buy")
     public Offer addBuyOffer(@RequestBody OfferRequest offerRequest) {
+        //TODO: check for negative price and quantity
         return offerService.addBuyOffer(offerRequest);
 
     }
+
+    @PostMapping("/delete/{offerId}")
+    public void deleteOffer(@PathVariable Long offerId){
+        offerService.deleteOfferById(offerId);
+        }
+
 
 }

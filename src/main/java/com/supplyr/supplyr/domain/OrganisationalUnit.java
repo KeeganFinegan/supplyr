@@ -26,10 +26,16 @@ public class OrganisationalUnit {
     private List<OrganisationalUnitAsset> organisationalUnitAssets;
 
     @OneToMany(mappedBy = "organisationalUnit", targetEntity = Offer.class)
+    @JsonIgnoreProperties("organisationalUnit")
     private List<Offer> offers;
 
     public OrganisationalUnit() {
 
+    }
+
+    public OrganisationalUnit(String name, double credits) {
+        this.name = name;
+        this.credits = credits;
     }
 
     public Long getId() {
@@ -72,5 +78,11 @@ public class OrganisationalUnit {
         this.organisationalUnitAssets = organisationalUnitAssets;
     }
 
+    public List<Offer> getOffers() {
+        return offers;
+    }
 
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
 }

@@ -1,21 +1,28 @@
 package com.supplyr.supplyr.domain;
 
 public class OfferRequest {
-    private Long assetId;
-    private Long organisationalUnitId;
-    private Long userId;
+    private String asset;
+    private String organisationalUnit;
     private double quantity;
     private double price;
 
     public OfferRequest() {
     }
 
-    public Long getAssetId() {
-        return assetId;
+    public String getAsset() {
+        return asset;
     }
 
-    public void setAssetId(Long assetId) {
-        this.assetId = assetId;
+    public void setAsset(String asset) {
+        this.asset = asset;
+    }
+
+    public String getOrganisationalUnit() {
+        return organisationalUnit;
+    }
+
+    public void setOrganisationalUnit(String organisationalUnit) {
+        this.organisationalUnit = organisationalUnit;
     }
 
     public double getQuantity() {
@@ -32,21 +39,5 @@ public class OfferRequest {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Long getOrganisationalUnitId() {
-        return organisationalUnitId;
-    }
-
-    public void setOrganisationalUnitId(Long organisationalUnitId) {
-        this.organisationalUnitId = organisationalUnitId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }
