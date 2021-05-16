@@ -2,6 +2,7 @@ package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
@@ -36,17 +37,24 @@ public class OrganisationalUnitService {
     /**
      * Retrieve a given Organisational Units from database
      *
-     * @param organisationalUnitId Id of Organisational Unit to be retrieved
+     * @param organisationalUnitName Name of Organisational Unit to be retrieved
      * @return Queried Organisational Unit
      */
-    public OrganisationalUnit getOrganisationalUnitById(Long organisationalUnitId) {
+    public OrganisationalUnit getOrganisationalUnitByName(String organisationalUnitName) {
+
+        try {
+
+
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(organisationalUnitId);
+                .findByUnitName(organisationalUnitName);
 
         if (optionalOrganisationalUnit.isPresent()) {
             return optionalOrganisationalUnit.get();
         } else {
-            throw new NotFoundException("Could not find Organisational Unit with id " + organisationalUnitId);
+            throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
+        }
+        } catch (Exception e){
+            throw new BadRequestException("Invalid request");
         }
     }
 
@@ -58,14 +66,20 @@ public class OrganisationalUnitService {
      */
     public OrganisationalUnit createOrganisationalUnit(OrganisationalUnit organisationalUnit) {
 
-        Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
-                .findByUnitName(organisationalUnit.getName());
+        try {
 
-        if (optUnit.isPresent()) {
-            throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
-                    + " already exists");
-        } else {
-            return organisationalUnitRepository.save(organisationalUnit);
+
+            Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
+                    .findByUnitName(organisationalUnit.getName());
+
+            if (optUnit.isPresent()) {
+                throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
+                        + " already exists");
+            } else {
+                return organisationalUnitRepository.save(organisationalUnit);
+            }
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid request");
         }
 
     }

@@ -6,7 +6,6 @@ import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +27,11 @@ public class OfferService {
 
     private HashMap<Long, OfferBook> offerBooks;
 
+    /**
+     * Returns the offerBooks hashmap
+     *
+     * @return offer books hashmap
+     */
     public HashMap<Long, OfferBook> getOfferBooks() {
         if (offerBooks == null) {
 
@@ -40,6 +44,13 @@ public class OfferService {
         this.offerBooks = offerBooks;
     }
 
+    /**
+     * Add new sell offer
+     *
+     * @param offerRequest Details of offer to be added
+     * @return Offer that was added
+     * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
+     */
     public Offer addSellOffer(OfferRequest offerRequest) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                 .findByUnitName(offerRequest.getOrganisationalUnit());
@@ -74,6 +85,13 @@ public class OfferService {
         throw new NotFoundException("Organisational Unit or Asset Type does not exist");
     }
 
+    /**
+     * Add new buy offer
+     *
+     * @param offerRequest Details of offer to be added
+     * @return Offer that was added
+     * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
+     */
     public Offer addBuyOffer(OfferRequest offerRequest) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                 .findByUnitName(offerRequest.getOrganisationalUnit());
@@ -98,6 +116,14 @@ public class OfferService {
 
     }
 
+    /**
+     * Update an offer quantity
+     *
+     * @param existingOfferId      Id of Asset to be retrieved from database
+     * @param updatedOfferQuantity New quantity of offer
+     * @return Asset that was queried
+     * @throws NotFoundException When existing offer does not exist
+     */
     public Offer updateOffer(Long existingOfferId, double updatedOfferQuantity) {
         System.out.println("OFFER UPDATED");
         return offerRepository.findById(existingOfferId)
@@ -139,6 +165,11 @@ public class OfferService {
 
     }
 
+    /**
+     * Add an offer to the offer book
+     *
+     * @param offer Offer to be added
+     */
     public void addOfferToOfferBook(Offer offer) {
 
         HashMap<Long, OfferBook> currentOfferBooks = getOfferBooks();
@@ -157,14 +188,6 @@ public class OfferService {
 
     }
 
-    /**
-     * Validate offer request with Security Context
-     *
-     * @param offerRequest client offer request details
-     * @return Returns true if user is valid
-     * @throws AccessDeniedException When user is not a member of the offer organisational unit
-     * @throws NotFoundException     When username does not exist
-     */
     private boolean isValidUser(OfferRequest offerRequest) {
         // TODO set back to original function
 //        // Get the current user from security context holder
@@ -188,14 +211,7 @@ public class OfferService {
         return true;
     }
 
-    /**
-     * Checks if Organisational Unit has enough credits to complete trade
-     *
-     * @param organisationalUnit Organisational Unit purchasing asset
-     * @param creditsNeeded      Credits needed to fulfil trade
-     * @return True if they have sufficient credits, false if they do not
-     * @throws NotFoundException When Organisational Unit does not exist
-     */
+
     private boolean hasSufficientCredits(OrganisationalUnit organisationalUnit, double creditsNeeded) {
 
         return organisationalUnit.getCredits() >= creditsNeeded;
@@ -267,14 +283,13 @@ public class OfferService {
         if (offerRepository.existsById(offerToBeDeleted)) {
 
             Optional<Offer> optionalOffer = offerRepository.findById(offerToBeDeleted);
-            if (optionalOffer.isPresent()){
+            if (optionalOffer.isPresent()) {
                 HashMap<Long, OfferBook> currentOfferBooks = getOfferBooks();
                 OfferBook offerBook = getOfferBook(optionalOffer.get(), currentOfferBooks);
                 offerBook.removeExistingOffer(offerToBeDeleted);
                 offerRepository.deleteById(offerToBeDeleted);
 
             }
-
 
         } else {
             throw new NotFoundException(String.format("Could not find offer with id %d", offerToBeDeleted));

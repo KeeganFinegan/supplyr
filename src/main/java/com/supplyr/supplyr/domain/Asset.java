@@ -19,6 +19,7 @@ public class Asset {
     public Asset() {
     }
 
+
     public Long getAssetId() {
         return assetId;
     }
@@ -33,5 +34,14 @@ public class Asset {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "assetId=" + assetId +
+                ", name='" + name + '\'' +
+                ", offers=" + offers.toString() +
+                '}';
     }
 }

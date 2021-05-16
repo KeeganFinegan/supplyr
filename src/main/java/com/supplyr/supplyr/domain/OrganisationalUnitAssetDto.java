@@ -6,6 +6,10 @@ public class OrganisationalUnitAssetDto {
 
     private Long assetId;
 
+    private String organisationalUnitName;
+
+    private String assetName;
+
     private double quantity;
 
     public OrganisationalUnitAssetDto() {
@@ -25,6 +29,22 @@ public class OrganisationalUnitAssetDto {
 
     public void setAssetId(Long assetId) {
         this.assetId = assetId;
+    }
+
+    public String getOrganisationalUnitName() {
+        return organisationalUnitName;
+    }
+
+    public void setOrganisationalUnitName(String organisationalUnitId) {
+        this.organisationalUnitName = organisationalUnitId;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetId) {
+        this.assetName = assetId;
     }
 
     public double getQuantity() {

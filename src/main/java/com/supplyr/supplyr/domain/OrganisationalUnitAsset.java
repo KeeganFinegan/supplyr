@@ -33,6 +33,7 @@ public class OrganisationalUnitAsset {
         this.quantity = quantity;
     }
 
+
     public OrganisationalUnitAssetId getId() {
         return id;
     }
@@ -63,5 +64,15 @@ public class OrganisationalUnitAsset {
 
     public void setQuantity(double quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", organisationalUnit=" + organisationalUnit +
+                ", asset=" + asset+
+                ", quantity=" + quantity +
+                '}';
     }
 }

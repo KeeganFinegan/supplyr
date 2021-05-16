@@ -16,7 +16,7 @@ public class OrganisationalUnitController {
     OrganisationalUnitService organisationalUnitService;
 
     /**
-     * Return a list of all Organisational Units
+     * REST endpoint to retrieve a list of all Organisational Units
      *
      * @return List of all Organisational Units
      */
@@ -26,18 +26,18 @@ public class OrganisationalUnitController {
     }
 
     /**
-     * Return an Organisational Unit with a given Id
+     * REST endpoint to retrieve an Organisational Unit with a given Id
      *
-     * @param organisationalUnitId Id of Organisational Unit to be returned
+     * @param organisationalUnitName Organisational Unit to be returned
      * @return Organisational Unit that was queried
      */
-    @GetMapping("/{organisationalUnitId}")
-    public OrganisationalUnit getOrganisationalUnitById(@PathVariable Long organisationalUnitId) {
-        return organisationalUnitService.getOrganisationalUnitById(organisationalUnitId);
+    @GetMapping("/{organisationalUnitName}")
+    public OrganisationalUnit getOrganisationalUnitByName(@PathVariable String organisationalUnitName) {
+        return organisationalUnitService.getOrganisationalUnitByName(organisationalUnitName);
     }
 
     /**
-     * Create a new Organisational Unit
+     * REST endpoint to create a new Organisational Unit
      *
      * @param organisationalUnit Organisational Unit to be added
      * @return Organisational unit that was added
@@ -48,11 +48,11 @@ public class OrganisationalUnitController {
     }
 
     /**
-     * Delete existing Organisational Unit
+     * REST endpoint to delete an existing Organisational Unit
      *
      * @param organisationalUnitId Id of Organisational Unit to be deleted
      */
-    @DeleteMapping
+    @PostMapping("/delete/{organisationalUnitId}")
     public void deleteOrganisationalUnit(@PathVariable Long organisationalUnitId) {
         organisationalUnitService.deleteById(organisationalUnitId);
     }

@@ -85,4 +85,16 @@ public class OrganisationalUnit {
     public void setOffers(List<Offer> offers) {
         this.offers = offers;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id:" + id +
+                ", name:'" + name + '\'' +
+                ", credits:" + credits +
+                ", users:" + users +
+                ", organisationalUnitAssets:" + organisationalUnitAssets +
+                ", offers:" + offers +
+                '}';
+    }
 }

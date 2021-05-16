@@ -14,6 +14,12 @@ public class TradeService {
     @Autowired
     TradeRepository tradeRepository;
 
+    /**
+     * Add new trade into database
+     *
+     * @param offerToBeTraded    Offer involved in the trade
+     * @param quantityToBeTraded quantity of that offer that is being traded
+     */
     public void addTrade(Offer offerToBeTraded, double quantityToBeTraded) {
         Trade trade = new Trade();
         trade.setAsset(offerToBeTraded.getAsset());

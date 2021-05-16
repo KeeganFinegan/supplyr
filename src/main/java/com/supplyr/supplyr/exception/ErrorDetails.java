@@ -2,8 +2,6 @@ package com.supplyr.supplyr.exception;
 
 import org.springframework.http.HttpStatus;
 
-import java.util.Date;
-
 public class ErrorDetails {
 
     private HttpStatus status;

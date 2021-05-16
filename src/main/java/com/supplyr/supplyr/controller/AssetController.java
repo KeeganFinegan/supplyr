@@ -18,27 +18,16 @@ public class AssetController {
 
 
     /**
-     * Return a list of all Assets
+     * REST endpoint to retrieve a list of all Assets
      */
     @GetMapping("/assets")
     public List<Asset> getAllAssets() {
         return assetService.getAllAssets();
     }
 
-    /**
-     * Return Asset with a given Id
-     *
-     * @param assetId Id of Asset to be retrieved
-     * @return Asset that was queried
-     */
-    @GetMapping("/assets/{assetId}")
-    public Asset getAssetById(@PathVariable Long assetId) {
-
-        return assetService.getAssetById(assetId);
-    }
 
     /**
-     * Add new Asset type
+     * REST endpoint to add a new Asset type
      *
      * @param asset Asset to be added
      * @return Asset that was added
@@ -50,7 +39,7 @@ public class AssetController {
     }
 
     /**
-     * Update the quantity of an Asset held by an Organisational Unit
+     * REST endpoint to update the quantity of an Asset held by an Organisational Unit
      *
      * @param assetObject Details of asset to be updated
      * @return Organisational Unit Asset that was updated

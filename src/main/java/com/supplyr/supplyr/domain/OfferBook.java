@@ -6,7 +6,6 @@ import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.TradeService;
 import com.supplyr.supplyr.utility.BeanUtility;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -161,10 +160,9 @@ public class OfferBook {
         // Remove any existing entry of offer with same ID
         removeExistingOffer(placedOffer.getId());
 
-        if (placedOffer.getPrice() < 1 || placedOffer.getQuantity() < 1){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid order price or quantity");
-        }
-        else if (!filledOffers.containsKey(placedOffer.getId())) {
+        if (placedOffer.getPrice() < 1 || placedOffer.getQuantity() < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order price or quantity");
+        } else if (!filledOffers.containsKey(placedOffer.getId())) {
             // Process BUY offer
             if (placedOffer.getType().equals(OfferType.BUY)) {
                 addOffer(placedOffer, sellOffers, buyOffers);
@@ -221,10 +219,10 @@ public class OfferBook {
     }
 
     private double executeOffer(Offer placedOffer,
-                               double placedOfferQuantity,
-                               Queue offersQueue,
-                               Offer currentOfferFromQueue,
-                               double currentOfferFromQueueQuantity) {
+                                double placedOfferQuantity,
+                                Queue offersQueue,
+                                Offer currentOfferFromQueue,
+                                double currentOfferFromQueueQuantity) {
 
         if (currentOfferFromQueueQuantity <= placedOfferQuantity) {
             executeOfferFromQueue(currentOfferFromQueue, currentOfferFromQueueQuantity);

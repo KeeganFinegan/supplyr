@@ -1,12 +1,13 @@
 package com.supplyr.supplyr.controller;
 
+import com.supplyr.supplyr.domain.ControllerResponse;
 import com.supplyr.supplyr.domain.User;
-import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +27,12 @@ public class UserController {
 
     /**
      * Return a List of all Users
+     * @return List of all users
      */
     @GetMapping()
+    @ResponseBody
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return supplyrUserDetailsService.getUsers();
     }
 
     /**
@@ -41,16 +44,16 @@ public class UserController {
 //        return supplyrUserDetailsService.loadUserByUsername(username);
 //
 //    }
-
     @GetMapping("/{username}")
     @ResponseBody
-    public User getUseObjectByUsername(@PathVariable String username) {
-        return supplyrUserDetailsService.getUserByUsername(username);
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public User getUserObjectByUsername(@PathVariable String username) {
 
+            return supplyrUserDetailsService.getUserByUsername(username);
     }
 
     /**
-     * Register a new User
+     * REST endpoint to register a new User
      *
      * @param organisationalUnit Organisational Unit that the user is to be a member of
      * @param user               User to be registered
@@ -62,40 +65,30 @@ public class UserController {
         return supplyrUserDetailsService.registerNewUser(organisationalUnit, user);
 
 
-
     }
 
     /**
-     * Register a new admin User
+     * REST endpoint to register a new admin User
      *
-     * @param user               User to be registered
+     * @param user User to be registered
      * @return User that was registered
      */
     @PostMapping("/admin")
-    public User createAdmin( @RequestBody User user) {
+    public User createAdmin(@RequestBody User user) {
         return supplyrUserDetailsService.registerNewAdmin(user);
 
     }
 
     /**
-     * Update the details of User with a given Id
+     * REST endpoint to update the details of User with a given Id
      *
-     * @param userId      Id of User to be updated
      * @param updatedUser Updated details of User
      * @return Updated User
      */
-    @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId, @RequestBody User updatedUser) {
-        return supplyrUserDetailsService.updateUser(userId, updatedUser);
+    @PutMapping("/{username}")
+    public User updateUserPassword( @RequestBody User updatedUser, @PathVariable String username) {
+        return supplyrUserDetailsService.updateUserPassword(updatedUser, username);
     }
 
-    /**
-     * Delete a User with a given Id
-     *
-     * @param userId Id of User to be deleted
-     */
-    @DeleteMapping("/{userId}")
-    public void deleteStudent(@PathVariable Long userId) {
-        supplyrUserDetailsService.deleteStudent(userId);
-    }
+
 }

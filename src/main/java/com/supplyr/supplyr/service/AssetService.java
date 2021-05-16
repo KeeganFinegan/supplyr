@@ -2,6 +2,7 @@ package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
@@ -9,7 +10,9 @@ import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +27,11 @@ public class AssetService {
     @Autowired
     OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
+    /**
+     * Retrieve a list of all Assets
+     *
+     * @return List of all assets
+     */
     public List<Asset> getAllAssets() {
         return assetRepository.findAll();
     }
@@ -51,33 +59,44 @@ public class AssetService {
      * @return Asset that was added to the database
      */
     public Asset addAssetType(Asset asset) {
-        Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
 
-        if (optAsset.isPresent()) {
-            throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
+        try {
+            Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
 
+            if (optAsset.isPresent()) {
+                throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
+
+            }
+
+            return assetRepository.save(asset);
+
+        } catch (Exception e){
+            throw new BadRequestException("Invalid request");
         }
 
-        return assetRepository.save(asset);
     }
 
     /**
      * Update the quantity of an Asset held by an Organisational Unit in the database
      *
      * @param assetObject Details of asset to be updated
-     * @return Organisational Unit Asset that was updated in the database
      */
     public void updateOrganisationalUnitAsset(OrganisationalUnitAssetDto assetObject) {
-
-        Optional<Asset> optionalAsset = assetRepository.findById(assetObject.getAssetId());
-
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(assetObject.getOrganisationalUnitId());
+        Optional<Asset> optionalAsset = getAssetFromDatabase(assetObject);
+        Optional<OrganisationalUnit> optionalOrganisationalUnit = getOrganisationalUnitFromDatabase(assetObject);
 
         if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()) {
 
             Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
                     .findByOrganisationalUnitAndAsset(optionalOrganisationalUnit.get(), optionalAsset.get());
+
+            if (optionalOrganisationalUnitAsset.isPresent()) {
+
+
+            } else {
+                addOrganisationalUnitAsset(assetObject);
+
+            }
 
             if (optionalOrganisationalUnitAsset.isPresent()) {
                 double oldQuantity = optionalOrganisationalUnitAsset.get().getQuantity();
@@ -87,9 +106,6 @@ public class AssetService {
                 organisationalUnitAsset.setQuantity(newQuantity);
                 organisationalUnitAssetRepository.save(organisationalUnitAsset);
 
-
-            } else {
-                throw new NotFoundException("No such asset or OrganisationalUnitAsset exists");
             }
 
 
@@ -99,17 +115,20 @@ public class AssetService {
 
     }
 
+    /**
+     * Add a new instance of an Asset held by an Organisational Unit
+     *
+     * @param assetObject Details of asset to be added
+     */
     public OrganisationalUnitAsset addOrganisationalUnitAsset(OrganisationalUnitAssetDto assetObject) {
-        OrganisationalUnitAssetId organisationalUnitAssetId = new OrganisationalUnitAssetId(
-                assetObject.getOrganisationalUnitId(), assetObject.getAssetId()
-        );
 
-        Optional<Asset> optionalAsset = assetRepository.findById(assetObject.getAssetId());
-
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findById(assetObject.getOrganisationalUnitId());
+        Optional<Asset> optionalAsset = getAssetFromDatabase(assetObject);
+        Optional<OrganisationalUnit> optionalOrganisationalUnit = getOrganisationalUnitFromDatabase(assetObject);
 
         if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent()) {
+            OrganisationalUnitAssetId organisationalUnitAssetId = new OrganisationalUnitAssetId(
+                    optionalOrganisationalUnit.get().getId(), optionalAsset.get().getAssetId()
+            );
             OrganisationalUnitAsset organisationalUnitAsset = new OrganisationalUnitAsset(
                     organisationalUnitAssetId, optionalOrganisationalUnit.get(), optionalAsset.get(),
                     assetObject.getQuantity()
@@ -119,6 +138,42 @@ public class AssetService {
         throw new NotFoundException("No such asset or Organisational Unit exists");
 
     }
+
+
+    private Optional<Asset> getAssetFromDatabase(OrganisationalUnitAssetDto assetObject){
+        Optional<Asset> optionalAsset;
+
+        // If ID exists, retrieve by ID
+        if (assetObject.getAssetId() != null){
+            optionalAsset = assetRepository.findById(assetObject.getAssetId());
+            // If ID is null, retrieve by name
+        } else {
+            optionalAsset = assetRepository.findByName(assetObject.getAssetName());
+
+        }
+
+        return optionalAsset;
+
+    }
+
+    private Optional<OrganisationalUnit> getOrganisationalUnitFromDatabase(OrganisationalUnitAssetDto assetObject){
+        Optional<OrganisationalUnit> optionalOrganisationalUnit;
+        // If ID exists, retrieve by ID
+        if (assetObject.getOrganisationalUnitId() != null){
+            optionalOrganisationalUnit = organisationalUnitRepository
+                    .findById(assetObject.getOrganisationalUnitId());
+            // If ID is null, retrieve by name
+        } else {
+            optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(assetObject.getOrganisationalUnitName());
+
+        }
+
+        return optionalOrganisationalUnit;
+
+    }
+
+
 
 
 }

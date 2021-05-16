@@ -2,7 +2,6 @@ package com.supplyr.supplyr.startup;
 
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.User;
-import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -29,12 +28,10 @@ public class StartupApplicationListener {
         offerService.initiateOfferQueue();
 
 
-        organisationalUnitService.createOrganisationalUnit(new OrganisationalUnit("Supplyr Admin",100));
+        organisationalUnitService.createOrganisationalUnit(new OrganisationalUnit("Supplyr Admin", 100));
 
 
-        supplyrUserDetailsService.registerNewAdmin(new User("admin","12345"));
-
-
+        supplyrUserDetailsService.registerNewAdmin(new User("admin", "12345"));
 
 
     }

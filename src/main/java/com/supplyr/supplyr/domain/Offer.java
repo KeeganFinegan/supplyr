@@ -120,10 +120,10 @@ public class Offer implements Cloneable {
 
     @Override
     public String toString() {
-        return "Offer{" +
+        return "{" +
                 "id=" + id +
-                ", organisationalUnit=" + organisationalUnit +
-                ", asset=" + asset +
+                ", organisationalUnit=" + organisationalUnit.toString() +
+                ", asset=" + asset.toString() +
                 ", quantity=" + quantity +
                 ", type=" + type +
                 ", price=" + price +

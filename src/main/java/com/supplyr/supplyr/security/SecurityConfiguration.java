@@ -62,17 +62,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .mvcMatchers("/api/v1/login").permitAll()
-                .mvcMatchers("/api/v1/assets").hasAnyRole("USER","ADMIN")
-                .mvcMatchers(HttpMethod.GET,"/api/v1/users").hasAnyRole("USER","ADMIN")
-                .mvcMatchers(HttpMethod.POST,"/api/v1/users/**").hasAnyRole("ADMIN")
-                .mvcMatchers("/api/v1/offers/**").hasAnyRole("USER","ADMIN")
-                .mvcMatchers("/api/v1/organisational-unit").hasAnyRole("USER","ADMIN");
-
-
+                .mvcMatchers("/api/v1/assets").hasAnyRole("USER", "ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/api/v1/assets").hasAnyRole("USER", "ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/api/v1/assets").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.PUT, "/api/v1/assets").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/api/v1/users/**").hasRole("ADMIN")
+                .mvcMatchers("/api/v1/offers/**").hasAnyRole("USER", "ADMIN")
+                .mvcMatchers("/api/v1/organisational-unit").hasAnyRole("USER", "ADMIN");
 
 
     }
-
 
 
     @Bean
@@ -89,7 +89,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowCredentials(true);
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowCredentials(true)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
     }

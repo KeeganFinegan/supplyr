@@ -13,6 +13,6 @@ public class NotFoundAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorDetails notFoundHandler(NotFoundException ex) {
-        return new ErrorDetails(HttpStatus.NOT_FOUND,"NotFoundException",ex.getMessage());
+        return new ErrorDetails(HttpStatus.NOT_FOUND, "NotFoundException", ex.getMessage());
     }
 }
