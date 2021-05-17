@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.*;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.InsufficientResourcesException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.*;
@@ -52,37 +53,42 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addSellOffer(OfferRequest offerRequest) {
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findByUnitName(offerRequest.getOrganisationalUnit());
+        if(isValidOffer(offerRequest)) {
+            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(offerRequest.getOrganisationalUnit());
 
-        Optional<Asset> optionalAsset = assetRepository
-                .findByName(offerRequest.getAsset());
+            Optional<Asset> optionalAsset = assetRepository
+                    .findByName(offerRequest.getAsset());
 
-        if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent() && isValidUser(offerRequest)) {
+            if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent() && isValidUser(offerRequest)) {
 
-            Asset offerAsset = optionalAsset.get();
-            OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
+                Asset offerAsset = optionalAsset.get();
+                OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
 
-            Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
-                    .findByOrganisationalUnitAndAsset(offerOrganisationalUnit, offerAsset);
+                Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
+                        .findByOrganisationalUnitAndAsset(offerOrganisationalUnit, offerAsset);
 
-            double offerAssetQuantity = offerRequest.getQuantity();
+                double offerAssetQuantity = offerRequest.getQuantity();
 
-            if (optionalOrganisationalUnitAsset.isPresent()) {
-                OrganisationalUnitAsset offerOrganisationalUnitAsset = optionalOrganisationalUnitAsset.get();
-                if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
+                if (optionalOrganisationalUnitAsset.isPresent()) {
+                    OrganisationalUnitAsset offerOrganisationalUnitAsset = optionalOrganisationalUnitAsset.get();
+                    if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
 
-                    return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
+                        return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
+                    }
+                    throw new BadRequestException(String.format("Not enough %s to complete the offer request",
+                            optionalAsset.get().getName()));
+
                 }
-                throw new InsufficientResourcesException(String.format("Not enough %s to complete the offer request",
-                        optionalAsset.get().getName()));
+                throw new NotFoundException(String.format("Organisational Unit %s does not possess %s",
+                        optionalOrganisationalUnit.get().getName(), offerRequest.getAsset()));
 
             }
-            throw new NotFoundException(String.format("Organisational Unit %s does not possess %s",
-                    optionalOrganisationalUnit.get().getName(), offerRequest.getAsset()));
-
+            throw new NotFoundException("Organisational Unit or Asset Type does not exist");
+        } else {
+            throw new BadRequestException("Invalid SELL Offer");
         }
-        throw new NotFoundException("Organisational Unit or Asset Type does not exist");
+
     }
 
     /**
@@ -93,26 +99,31 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addBuyOffer(OfferRequest offerRequest) {
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findByUnitName(offerRequest.getOrganisationalUnit());
-        Optional<Asset> optionalAsset = assetRepository
-                .findByName(offerRequest.getAsset());
+        if(isValidOffer(offerRequest)) {
+            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(offerRequest.getOrganisationalUnit());
+            Optional<Asset> optionalAsset = assetRepository
+                    .findByName(offerRequest.getAsset());
 
-        if (optionalOrganisationalUnit.isPresent() && optionalAsset.isPresent() && isValidUser(offerRequest)) {
+            if (optionalOrganisationalUnit.isPresent() && optionalAsset.isPresent() && isValidUser(offerRequest)) {
 
-            Asset offerAsset = optionalAsset.get();
-            OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
+                Asset offerAsset = optionalAsset.get();
+                OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
 
-            double creditsNeeded = offerRequest.getPrice() * offerRequest.getQuantity();
-            if (hasSufficientCredits(offerOrganisationalUnit, creditsNeeded)) {
+                double creditsNeeded = offerRequest.getPrice() * offerRequest.getQuantity();
+                if (hasSufficientCredits(offerOrganisationalUnit, creditsNeeded)) {
 
-                return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
+                    return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
+                }
+                throw new BadRequestException(String
+                        .format("Organisational Unit '%s' does not have sufficient funds",
+                                optionalOrganisationalUnit.get().getName()));
             }
-            throw new InsufficientResourcesException(String
-                    .format("Organisational Unit '%s' does not have sufficient funds",
-                            optionalOrganisationalUnit.get().getName()));
+            throw new NotFoundException("Organisational Unit or Asset Type does not exist");
+        } else{
+            throw new BadRequestException("Invalid BUY Offer");
         }
-        throw new NotFoundException("Organisational Unit or Asset Type does not exist");
+
 
     }
 
@@ -294,6 +305,11 @@ public class OfferService {
         } else {
             throw new NotFoundException(String.format("Could not find offer with id %d", offerToBeDeleted));
         }
+
+    }
+
+    private boolean isValidOffer(OfferRequest offerRequest){
+        return !(offerRequest.getPrice() < 1) && !(offerRequest.getQuantity() < 1);
 
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "users")
 @Entity
@@ -26,6 +28,7 @@ public class User {
     private OrganisationalUnit organisationalUnit;
     private boolean active;
     private String roles;
+
 
     public User() {
 

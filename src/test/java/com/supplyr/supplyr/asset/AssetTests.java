@@ -3,10 +3,7 @@ package com.supplyr.supplyr.asset;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supplyr.supplyr.domain.Asset;
-import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
-import com.supplyr.supplyr.domain.User;
+import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
@@ -33,8 +30,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -161,10 +157,20 @@ public class AssetTests {
     @Test
     public void allocate_asset_to_organisational_unit() throws Exception {
 
+        OrganisationalUnitAsset request = new OrganisationalUnitAsset();
+        request.setQuantity(10);
+        request.setAsset(cpuHours);
+        request.setOrganisationalUnit(it);
+        when(assetService.addOrganisationalUnitAsset(any(OrganisationalUnitAssetDto.class))).thenReturn(request);
 
-        //when(assetService.addOrganisationalUnitAsset()).thenReturn(assetList);
-
-        MvcResult result = mockMvc.perform(get("/api/v1/assets")
+        MvcResult result = mockMvc.perform(put("/api/v1/assets")
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"organisationalUnitName\": \"IT\",\n" +
+                        "    \"assetName\": \"CPU Hours\",\n" +
+                        "    \"quantity\": 10\n" +
+                        "}")
 
         )
 
@@ -174,10 +180,9 @@ public class AssetTests {
 
 
         String responseAsString = result.getResponse().getContentAsString();
-        Asset[] objectResponse = objectMapper.readValue(responseAsString, Asset[].class);
+        OrganisationalUnitAsset objectResponse = objectMapper.readValue(responseAsString, OrganisationalUnitAsset.class);
 
-        assertEquals("Software License", objectResponse[0].getName());
-        assertEquals("CPU Hours", objectResponse[1].getName());
+        assertEquals("CPU Hours", objectResponse.getAsset().getName());
 
     }
 

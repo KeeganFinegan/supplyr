@@ -1,8 +1,6 @@
 package com.supplyr.supplyr.service;
 
-import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.domain.SupplyrUserDetails;
-import com.supplyr.supplyr.domain.User;
+import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
@@ -28,6 +26,9 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    TradeService tradeService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -144,4 +145,5 @@ public class SupplyrUserDetailsService implements UserDetailsService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
+
 }

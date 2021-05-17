@@ -3,7 +3,9 @@ package com.supplyr.supplyr.controller;
 import com.supplyr.supplyr.domain.Asset;
 import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
 import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
+import com.supplyr.supplyr.domain.Trade;
 import com.supplyr.supplyr.service.AssetService;
+import com.supplyr.supplyr.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,9 @@ public class AssetController {
 
     @Autowired
     AssetService assetService;
+
+    @Autowired
+    TradeService tradeService;
 
 
     /**
@@ -48,5 +53,10 @@ public class AssetController {
     public OrganisationalUnitAsset addOrganisationalUnitAsset(@RequestBody OrganisationalUnitAssetDto assetObject) {
         return assetService.addOrganisationalUnitAsset(assetObject);
 
+    }
+
+    @GetMapping("/assets/{asset}/trades")
+    public List<Trade> getAssetTrades(@PathVariable String asset){
+        return tradeService.getAssetTrades(asset);
     }
 }

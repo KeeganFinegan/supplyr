@@ -39,15 +39,16 @@ public class AssetService {
     /**
      * Retrieve Asset with a given id from the database
      *
-     * @param assetId Id of Asset to be retrieved from database
+     * @param assetName Asset to be retrieved from database
      * @return Asset that was queried
      * @throws NotFoundException When asset does not exists
      */
-    public Asset getAssetById(Long assetId) {
-        if (assetRepository.existsById(assetId)) {
-            return assetRepository.findById(assetId).get();
+    public Asset getAssetByName(String assetName) {
+        Optional<Asset> optionalAsset = assetRepository.findByName(assetName);
+        if(optionalAsset.isPresent()){
+            return optionalAsset.get();
         } else {
-            throw new NotFoundException("Could not find asset with id " + assetId);
+            throw new NotFoundException("Could not find asset " + assetName);
         }
 
     }

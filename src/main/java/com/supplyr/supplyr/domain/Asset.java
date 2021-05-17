@@ -41,7 +41,7 @@ public class Asset {
         return "{" +
                 "assetId=" + assetId +
                 ", name='" + name + '\'' +
-                ", offers=" + offers.toString() +
+                ", offers=" + offers+
                 '}';
     }
 }
