@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -156,7 +155,7 @@ public class UserControllerTests {
         userRegistered.setOrganisationalUnit(it);
         userRegistered.setRoles("ROLE_USER");
 
-        when(supplyrUserDetailsService.registerNewUser(eq("IT"),any(User.class))).thenReturn(userRegistered);
+        when(supplyrUserDetailsService.registerNewUser(eq("IT"), any(User.class))).thenReturn(userRegistered);
 
         MvcResult result = mockMvc.perform(post("/api/v1/users/IT")
                 .characterEncoding("UTF-8")
@@ -190,7 +189,7 @@ public class UserControllerTests {
 
         bob.setPassword("newPassword");
 
-        when(supplyrUserDetailsService.updateUserPassword(any(User.class),eq("Bob"))).thenReturn(bob);
+        when(supplyrUserDetailsService.updateUserPassword(any(User.class), eq("Bob"))).thenReturn(bob);
 
 
         MvcResult result = mockMvc.perform(put("/api/v1/users/Bob")

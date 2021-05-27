@@ -31,7 +31,14 @@ public class OrganisationalUnitService {
      * @return List of all Organisational Units
      */
     public List<OrganisationalUnit> getOrganisationalUnits() {
-        return organisationalUnitRepository.findAll();
+        Optional<OrganisationalUnit> adminUnit = organisationalUnitRepository.findByUnitName("Supplyr Admin");
+        if (adminUnit.isPresent()) {
+            List<OrganisationalUnit> units = organisationalUnitRepository.findAll();
+            units.remove(adminUnit.get());
+            return units;
+        }
+        throw new BadRequestException("An Error has occurred");
+
     }
 
     /**
@@ -44,16 +51,15 @@ public class OrganisationalUnitService {
 
         try {
 
+            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(organisationalUnitName);
 
-        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                .findByUnitName(organisationalUnitName);
-
-        if (optionalOrganisationalUnit.isPresent()) {
-            return optionalOrganisationalUnit.get();
-        } else {
-            throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
-        }
-        } catch (Exception e){
+            if (optionalOrganisationalUnit.isPresent()) {
+                return optionalOrganisationalUnit.get();
+            } else {
+                throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
+            }
+        } catch (Exception e) {
             throw new BadRequestException("Invalid request");
         }
     }
@@ -66,9 +72,6 @@ public class OrganisationalUnitService {
      */
     public OrganisationalUnit createOrganisationalUnit(OrganisationalUnit organisationalUnit) {
 
-        try {
-
-
             Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
                     .findByUnitName(organisationalUnit.getName());
 
@@ -76,21 +79,21 @@ public class OrganisationalUnitService {
                 throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
                         + " already exists");
             } else {
+
                 return organisationalUnitRepository.save(organisationalUnit);
             }
-        } catch (Exception e) {
-            throw new BadRequestException("Invalid request");
-        }
 
     }
 
-    public OrganisationalUnit updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
-        return organisationalUnitRepository
+
+    public void updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
+        organisationalUnitRepository
                 .findById(organisationalUnitId).map(organisationalUnit -> {
-                    organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
-                    return organisationalUnit;
-                }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "
-                        , organisationalUnitId)));
+            organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
+            return organisationalUnit;
+        }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "
+                , organisationalUnitId)));
+
     }
 
     /**
@@ -107,4 +110,8 @@ public class OrganisationalUnitService {
                     organisationalUnitId));
         }
     }
+
+
+
+
 }

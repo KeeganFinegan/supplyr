@@ -227,7 +227,6 @@ public class OfferBook {
         if (currentOfferFromQueueQuantity <= placedOfferQuantity) {
             executeOfferFromQueue(currentOfferFromQueue, currentOfferFromQueueQuantity);
             offersQueue.poll();
-
             fillPartialOrders(placedOffer, currentOfferFromQueueQuantity);
             placedOfferQuantity = placedOfferQuantity - currentOfferFromQueueQuantity;
             placedOffer.setQuantity(placedOfferQuantity);
@@ -283,7 +282,6 @@ public class OfferBook {
                         currentOfferFromQueue.setPrice(placedOffer.getPrice());
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
-
                     } else {
                         break;
                     }
@@ -319,6 +317,7 @@ public class OfferBook {
 
     }
 
+    // Process/fulfill an offer once it has been matched with another offer
     private void executeTrade(Offer offer, double quantity) {
 
         OrganisationalUnitAssetDto assetObject = new OrganisationalUnitAssetDto();

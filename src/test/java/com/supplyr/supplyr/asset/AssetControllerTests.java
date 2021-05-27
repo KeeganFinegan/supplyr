@@ -1,13 +1,13 @@
 package com.supplyr.supplyr.asset;
 
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supplyr.supplyr.domain.*;
-import com.supplyr.supplyr.exception.AlreadyExistsException;
+import com.supplyr.supplyr.domain.Asset;
+import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
+import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
-import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -22,9 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.rmi.AlreadyBoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc(addFilters = false)
-public class AssetTests {
+public class AssetControllerTests {
 
 
     @Autowired
@@ -125,7 +123,6 @@ public class AssetTests {
         assertEquals(HttpStatus.BAD_REQUEST, objectResponse.getStatus());
 
     }
-
 
 
     @Test

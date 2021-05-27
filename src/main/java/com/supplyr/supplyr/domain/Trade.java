@@ -96,4 +96,18 @@ public class Trade {
     public void setFulfilled(boolean fulfilled) {
         this.fulfilled = fulfilled;
     }
+
+    @Override
+    public String toString() {
+        return "Trade{" +
+                "id=" + id +
+                ", organisationalUnit=" + organisationalUnit +
+                ", asset=" + asset +
+                ", quantity=" + quantity +
+                ", type=" + type +
+                ", price=" + price +
+                ", timestamp=" + timestamp +
+                ", fulfilled=" + fulfilled +
+                '}';
+    }
 }

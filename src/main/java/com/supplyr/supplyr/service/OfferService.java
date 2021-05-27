@@ -4,9 +4,11 @@ import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.InsufficientResourcesException;
 import com.supplyr.supplyr.exception.NotFoundException;
+import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -115,9 +117,8 @@ public class OfferService {
 
                     return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
                 }
-                throw new BadRequestException(String
-                        .format("Organisational Unit '%s' does not have sufficient funds",
-                                optionalOrganisationalUnit.get().getName()));
+                throw new BadRequestException(
+                        "Insufficient funds to complete BUY offer");
             }
             throw new NotFoundException("Organisational Unit or Asset Type does not exist");
         } else{
@@ -136,7 +137,7 @@ public class OfferService {
      * @throws NotFoundException When existing offer does not exist
      */
     public Offer updateOffer(Long existingOfferId, double updatedOfferQuantity) {
-        System.out.println("OFFER UPDATED");
+
         return offerRepository.findById(existingOfferId)
                 .map(offer -> {
                     offer.setQuantity(updatedOfferQuantity);
@@ -201,25 +202,26 @@ public class OfferService {
 
     private boolean isValidUser(OfferRequest offerRequest) {
         // TODO set back to original function
-//        // Get the current user from security context holder
-//        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-//        Optional<User> optionalUser = userRepository.findByUsername(currentUser);
-//
-//        if (optionalUser.isPresent()) {
-//
-//            Long organisationalUnitIdFromOffer = offerRequest.getOrganisationalUnitId();
-//
-//            Long organisationalUnitIdForCurrentUser = optionalUser.get().getOrganisationalUnit().getId();
-//
-//            if (organisationalUnitIdFromOffer.equals(organisationalUnitIdForCurrentUser)) {
-//                return true;
-//            } else {
-//                throw new AccessDeniedException(String.format("Access to Organisational Unit %d not permitted",
-//                        organisationalUnitIdFromOffer));
-//            }
-//        }
-//        throw new NotFoundException("Username not found");
-        return true;
+        // Get the current user from security context holder
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> optionalUser = userRepository.findByUsername(currentUser);
+
+        if (optionalUser.isPresent()) {
+
+            String organisationalUnitNameFromOffer = offerRequest.getOrganisationalUnit();
+
+            String userOrganisationalUnit  = optionalUser.get().getOrganisationalUnit().getName();
+
+            if (userOrganisationalUnit.equals(organisationalUnitNameFromOffer)) {
+                return true;
+            } else {
+                throw new UnauthorizedException(String.format("Access to Organisational Unit %s not permitted",
+                        organisationalUnitNameFromOffer));
+            }
+        }
+        throw new NotFoundException("User not found");
+
+
     }
 
 

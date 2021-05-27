@@ -2,7 +2,6 @@ package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
-import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
@@ -10,9 +9,7 @@ import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -45,7 +42,7 @@ public class AssetService {
      */
     public Asset getAssetByName(String assetName) {
         Optional<Asset> optionalAsset = assetRepository.findByName(assetName);
-        if(optionalAsset.isPresent()){
+        if (optionalAsset.isPresent()) {
             return optionalAsset.get();
         } else {
             throw new NotFoundException("Could not find asset " + assetName);
@@ -61,19 +58,16 @@ public class AssetService {
      */
     public Asset addAssetType(Asset asset) {
 
-        try {
-            Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
 
-            if (optAsset.isPresent()) {
-                throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
+        Optional<Asset> optAsset = assetRepository.findByName(asset.getName());
 
-            }
+        if (optAsset.isPresent()) {
+            throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
 
+        } else {
             return assetRepository.save(asset);
-
-        } catch (Exception e){
-            throw new BadRequestException("Invalid request");
         }
+
 
     }
 
@@ -141,11 +135,11 @@ public class AssetService {
     }
 
 
-    private Optional<Asset> getAssetFromDatabase(OrganisationalUnitAssetDto assetObject){
+    private Optional<Asset> getAssetFromDatabase(OrganisationalUnitAssetDto assetObject) {
         Optional<Asset> optionalAsset;
 
         // If ID exists, retrieve by ID
-        if (assetObject.getAssetId() != null){
+        if (assetObject.getAssetId() != null) {
             optionalAsset = assetRepository.findById(assetObject.getAssetId());
             // If ID is null, retrieve by name
         } else {
@@ -157,10 +151,10 @@ public class AssetService {
 
     }
 
-    private Optional<OrganisationalUnit> getOrganisationalUnitFromDatabase(OrganisationalUnitAssetDto assetObject){
+    private Optional<OrganisationalUnit> getOrganisationalUnitFromDatabase(OrganisationalUnitAssetDto assetObject) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit;
         // If ID exists, retrieve by ID
-        if (assetObject.getOrganisationalUnitId() != null){
+        if (assetObject.getOrganisationalUnitId() != null) {
             optionalOrganisationalUnit = organisationalUnitRepository
                     .findById(assetObject.getOrganisationalUnitId());
             // If ID is null, retrieve by name
@@ -173,8 +167,6 @@ public class AssetService {
         return optionalOrganisationalUnit;
 
     }
-
-
 
 
 }

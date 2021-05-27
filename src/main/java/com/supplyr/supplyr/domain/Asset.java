@@ -38,10 +38,10 @@ public class Asset {
 
     @Override
     public String toString() {
-        return "{" +
+        return "Asset{" +
                 "assetId=" + assetId +
                 ", name='" + name + '\'' +
-                ", offers=" + offers+
+                ", offers=" + offers +
                 '}';
     }
 }

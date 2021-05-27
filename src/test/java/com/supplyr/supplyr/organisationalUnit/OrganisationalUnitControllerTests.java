@@ -1,9 +1,7 @@
-package com.supplyr.supplyr.user;
+package com.supplyr.supplyr.organisationalUnit;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
@@ -21,19 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.rmi.AlreadyBoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -73,9 +67,9 @@ public class OrganisationalUnitControllerTests {
     public void createOrganisationalUnit() throws Exception {
 
 
-       OrganisationalUnit organisationalUnitRequest = new OrganisationalUnit();
-       organisationalUnitRequest.setName("IT");
-       organisationalUnitRequest.setCredits(250);
+        OrganisationalUnit organisationalUnitRequest = new OrganisationalUnit();
+        organisationalUnitRequest.setName("IT");
+        organisationalUnitRequest.setCredits(250);
 
         when(organisationalUnitService.createOrganisationalUnit(any(OrganisationalUnit.class))).thenReturn(it);
 
@@ -139,7 +133,7 @@ public class OrganisationalUnitControllerTests {
         organisationalUnitRequest.setCredits(250);
 
         when(organisationalUnitService.createOrganisationalUnit(any(OrganisationalUnit.class)))
-                .thenThrow( new BadRequestException("Invalid request"));
+                .thenThrow(new BadRequestException("Invalid request"));
 
         MvcResult result = mockMvc.perform(post("/api/v1/organisational-unit")
                 .characterEncoding("UTF-8")
@@ -168,9 +162,9 @@ public class OrganisationalUnitControllerTests {
         organisationalUnitRequest.setName("IT");
         organisationalUnitRequest.setCredits(250);
 
-       List<OrganisationalUnit> organisationalUnits = new ArrayList<>();
-       organisationalUnits.add(it);
-       organisationalUnits.add(finance);
+        List<OrganisationalUnit> organisationalUnits = new ArrayList<>();
+        organisationalUnits.add(it);
+        organisationalUnits.add(finance);
 
         when(organisationalUnitService.getOrganisationalUnits()).thenReturn(organisationalUnits);
 
@@ -185,11 +179,11 @@ public class OrganisationalUnitControllerTests {
 
         String responseAsString = result.getResponse().getContentAsString();
 
-        OrganisationalUnit[] objectResponse = objectMapper.readValue(responseAsString,OrganisationalUnit[].class);
+        OrganisationalUnit[] objectResponse = objectMapper.readValue(responseAsString, OrganisationalUnit[].class);
 
 
         assertEquals("IT", objectResponse[0].getName());
-        assertEquals("Finance",objectResponse[1].getName());
+        assertEquals("Finance", objectResponse[1].getName());
     }
 
     @Test
@@ -211,7 +205,7 @@ public class OrganisationalUnitControllerTests {
 
         String responseAsString = result.getResponse().getContentAsString();
 
-        OrganisationalUnit objectResponse = objectMapper.readValue(responseAsString,OrganisationalUnit.class);
+        OrganisationalUnit objectResponse = objectMapper.readValue(responseAsString, OrganisationalUnit.class);
 
         assertEquals("IT", objectResponse.getName());
     }
@@ -232,7 +226,7 @@ public class OrganisationalUnitControllerTests {
         String responseAsString = result.getResponse().getContentAsString();
         ErrorDetails objectResponse = objectMapper.readValue(responseAsString, ErrorDetails.class);
 
-        assertEquals("Could not find Organisational Unit Management",objectResponse.getMessage());
+        assertEquals("Could not find Organisational Unit Management", objectResponse.getMessage());
 
     }
 }

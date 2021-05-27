@@ -88,13 +88,13 @@ public class OrganisationalUnit {
 
     @Override
     public String toString() {
-        return "{" +
-                "id:" + id +
-                ", name:'" + name + '\'' +
-                ", credits:" + credits +
-                ", users:" + users +
-                ", organisationalUnitAssets:" + organisationalUnitAssets +
-                ", offers:" + offers +
+        return "OrganisationalUnit{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", credits=" + credits +
+                ", users=" + users +
+                ", organisationalUnitAssets=" + organisationalUnitAssets +
+                ", offers=" + offers +
                 '}';
     }
 }

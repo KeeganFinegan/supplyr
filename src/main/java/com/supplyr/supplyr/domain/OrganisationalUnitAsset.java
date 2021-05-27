@@ -68,10 +68,10 @@ public class OrganisationalUnitAsset {
 
     @Override
     public String toString() {
-        return "{" +
+        return "OrganisationalUnitAsset{" +
                 "id=" + id +
                 ", organisationalUnit=" + organisationalUnit +
-                ", asset=" + asset+
+                ", asset=" + asset +
                 ", quantity=" + quantity +
                 '}';
     }

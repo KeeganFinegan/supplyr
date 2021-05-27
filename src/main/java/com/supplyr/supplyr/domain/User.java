@@ -89,13 +89,13 @@ public class User {
 
     @Override
     public String toString() {
-        return "{" +
-                "id:" + id +
-                ", username:" + username + '\'' +
-                ", password:'" + password + '\'' +
-                ", organisationalUnit:" + organisationalUnit +
-                ", active:" + active +
-                ", roles:'" + roles + '\'' +
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", organisationalUnit=" + organisationalUnit +
+                ", active=" + active +
+                ", roles='" + roles + '\'' +
                 '}';
     }
 }
