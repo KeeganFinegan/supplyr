@@ -1,10 +1,8 @@
 package com.supplyr.supplyr.controller;
 
-import com.supplyr.supplyr.domain.Asset;
-import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
-import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
-import com.supplyr.supplyr.domain.Trade;
+import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.service.AssetService;
+import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +13,18 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class AssetController {
 
-    @Autowired
-    AssetService assetService;
+
+    private final AssetService assetService;
+    private final TradeService tradeService;
+    private final OfferService offerService;
 
     @Autowired
-    TradeService tradeService;
+    public AssetController(AssetService assetService, TradeService tradeService, OfferService offerService) {
+        this.assetService = assetService;
+        this.tradeService = tradeService;
+        this.offerService = offerService;
+    }
+
 
 
     /**
@@ -58,5 +63,18 @@ public class AssetController {
     @GetMapping("/assets/{asset}/trades")
     public List<Trade> getAssetTrades(@PathVariable String asset){
         return tradeService.getAssetTrades(asset);
+    }
+
+    @GetMapping("/assets/{asset}/offer-info")
+        public LowestAskHighestBidDto getLowestAsk(@PathVariable String asset){
+
+            List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid(asset);
+            LowestAskHighestBidDto lowestAskHighestBidDto = new LowestAskHighestBidDto();
+            lowestAskHighestBidDto.setLowestAsk(lowestAskHighestBid.get(0));
+            lowestAskHighestBidDto.setHighestBid(lowestAskHighestBid.get(1));
+            return lowestAskHighestBidDto;
+
+
+
     }
 }

@@ -22,7 +22,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organisational_unit_id")
     @JsonIgnoreProperties("users")
     private OrganisationalUnit organisationalUnit;
@@ -87,15 +87,5 @@ public class User {
         this.roles = roles;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", organisationalUnit=" + organisationalUnit +
-                ", active=" + active +
-                ", roles='" + roles + '\'' +
-                '}';
-    }
+
 }

@@ -7,6 +7,7 @@ import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -66,10 +67,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/api/v1/assets").hasAnyRole("USER", "ADMIN")
                 .mvcMatchers(HttpMethod.POST, "/api/v1/assets").hasRole("ADMIN")
                 .mvcMatchers(HttpMethod.PUT, "/api/v1/assets").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.PUT, "/api/v1/assets/asset-info").hasAnyRole("USER", "ADMIN")
                 .mvcMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
                 .mvcMatchers(HttpMethod.POST, "/api/v1/users/**").hasRole("ADMIN")
                 .mvcMatchers("/api/v1/offers/**").hasAnyRole("USER", "ADMIN")
                 .mvcMatchers("/api/v1/organisational-unit").hasAnyRole("USER", "ADMIN");
+
 
 
     }

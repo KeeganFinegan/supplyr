@@ -16,14 +16,12 @@ import java.util.Optional;
 @Service
 public class OrganisationalUnitService {
 
-    @Autowired
-    OrganisationalUnitRepository organisationalUnitRepository;
+    private final OrganisationalUnitRepository organisationalUnitRepository;
 
     @Autowired
-    OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
-
-    @Autowired
-    AssetRepository assetRepository;
+    public OrganisationalUnitService(OrganisationalUnitRepository organisationalUnitRepository) {
+        this.organisationalUnitRepository = organisationalUnitRepository;
+    }
 
     /**
      * Retrieve all Organisational Units from database

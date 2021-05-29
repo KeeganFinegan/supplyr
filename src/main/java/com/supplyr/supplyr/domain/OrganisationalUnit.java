@@ -86,15 +86,5 @@ public class OrganisationalUnit {
         this.offers = offers;
     }
 
-    @Override
-    public String toString() {
-        return "OrganisationalUnit{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", credits=" + credits +
-                ", users=" + users +
-                ", organisationalUnitAssets=" + organisationalUnitAssets +
-                ", offers=" + offers +
-                '}';
-    }
+
 }

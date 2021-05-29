@@ -15,14 +15,18 @@ import java.util.Optional;
 @Service
 public class AssetService {
 
-    @Autowired
-    AssetRepository assetRepository;
+    private final AssetRepository assetRepository;
+
+    private final OrganisationalUnitRepository organisationalUnitRepository;
+
+    private final OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
     @Autowired
-    OrganisationalUnitRepository organisationalUnitRepository;
-
-    @Autowired
-    OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
+    public AssetService(AssetRepository assetRepository, OrganisationalUnitRepository organisationalUnitRepository, OrganisationalUnitAssetRepository organisationalUnitAssetRepository) {
+        this.assetRepository = assetRepository;
+        this.organisationalUnitRepository = organisationalUnitRepository;
+        this.organisationalUnitAssetRepository = organisationalUnitAssetRepository;
+    }
 
     /**
      * Retrieve a list of all Assets

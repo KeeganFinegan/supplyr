@@ -2,18 +2,27 @@ package com.supplyr.supplyr.offer;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.supplyr.supplyr.controller.AssetController;
+import com.supplyr.supplyr.controller.OfferController;
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
+import com.supplyr.supplyr.repository.*;
 import com.supplyr.supplyr.service.OfferService;
+import com.supplyr.supplyr.service.SecurityContextService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -27,15 +36,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = OfferController.class,
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class) },
+        excludeAutoConfiguration = { SecurityAutoConfiguration.class})
 public class OfferControllerTests {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    OfferService offerService;
+    private OfferService offerService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -153,7 +163,7 @@ public class OfferControllerTests {
     }
 
     @Test
-    public void addSellOfferWithNotEnoughAssets() throws Exception {
+    public void addBuyOfferWithNotEnoughAssets() throws Exception {
         LocalDateTime timestamp = LocalDateTime.now();
         OfferRequest buyOffer = new OfferRequest();
         buyOffer.setAsset("CPU Hours");
@@ -201,11 +211,11 @@ public class OfferControllerTests {
     @Test
     public void addSellOffer() throws Exception {
         LocalDateTime timestamp = LocalDateTime.now();
-        OfferRequest buyOffer = new OfferRequest();
-        buyOffer.setAsset("CPU Hours");
-        buyOffer.setOrganisationalUnit("IT");
-        buyOffer.setPrice(1);
-        buyOffer.setQuantity(5);
+        OfferRequest sellOffer = new OfferRequest();
+        sellOffer.setAsset("CPU Hours");
+        sellOffer.setOrganisationalUnit("IT");
+        sellOffer.setPrice(1);
+        sellOffer.setQuantity(5);
 
         Offer approvedOffer = new Offer();
         approvedOffer.setPrice(1);

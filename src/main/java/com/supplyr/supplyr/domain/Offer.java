@@ -15,7 +15,7 @@ public class Offer implements Cloneable {
     @JoinColumn(name = "organisational_unit_id")
     private OrganisationalUnit organisationalUnit;
 
-    @ManyToOne()
+    @ManyToOne( fetch=FetchType.EAGER)
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
@@ -118,17 +118,5 @@ public class Offer implements Cloneable {
         return super.clone();
     }
 
-    @Override
-    public String toString() {
-        return "Offer{" +
-                "id=" + id +
-                ", organisationalUnit=" + organisationalUnit +
-                ", asset=" + asset +
-                ", quantity=" + quantity +
-                ", type=" + type +
-                ", price=" + price +
-                ", timestamp=" + timestamp +
-                ", fulfilled=" + fulfilled +
-                '}';
-    }
+
 }

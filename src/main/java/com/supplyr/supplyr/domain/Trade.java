@@ -11,11 +11,11 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organisational_unit_id")
     private OrganisationalUnit organisationalUnit;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "asset_id")
     private Asset asset;
 

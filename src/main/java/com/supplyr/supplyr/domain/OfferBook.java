@@ -1,24 +1,41 @@
 package com.supplyr.supplyr.domain;
 
-import com.supplyr.supplyr.service.AssetService;
-import com.supplyr.supplyr.service.OfferService;
-import com.supplyr.supplyr.service.OrganisationalUnitService;
-import com.supplyr.supplyr.service.TradeService;
+import com.supplyr.supplyr.exception.BadRequestException;
+import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
+import org.apache.tomcat.util.collections.SynchronizedQueue;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.concurrent.PriorityBlockingQueue;
+
+class COMPARING implements Comparator<Offer> {
+    public int compare(Offer o1, Offer o2) {
+
+        if (o1.getPrice() < o2.getPrice()) {
+            return 1;
+        } else if (o1.getPrice() > o2.getPrice()) {
+            return -1;
+        } else {
+            if (o1.getTimestamp().isBefore(o2.getTimestamp())) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+}
 
 public class OfferBook {
 
     private Long assetId;
 
     // Stores BUY offers that are sorted buy price and then timestamp
-    private PriorityQueue<Offer> buyOffers;
+    private PriorityBlockingQueue<Offer> buyOffers;
 
     // Stores SELL offers that are sorted buy price and then timestamp
-    private PriorityQueue<Offer> sellOffers;
+    private PriorityBlockingQueue<Offer> sellOffers;
     private Map<Long, Offer> filledOffers;
     private Map<Long, Offer> offerMap;
 
@@ -34,55 +51,21 @@ public class OfferBook {
     // Inject OfferService class into non-bean class
     OrganisationalUnitService organisationalUnitService = BeanUtility.getBean(OrganisationalUnitService.class);
 
+    // Inject OfferService class into non-bean class
+    OrganisationalUnitAssetService organisationalUnitAssetService = BeanUtility.getBean(OrganisationalUnitAssetService.class);
+
     /**
      * Custom constructor to override compare method for BUY and SELL priority queues
      */
     public OfferBook(Long assetId) {
         this.assetId = assetId;
-        this.filledOffers = new HashMap<>();
-        this.offerMap = new HashMap<>();
+        this.filledOffers = Collections.synchronizedMap( new HashMap<>());
+        this.offerMap = Collections.synchronizedMap( new HashMap<>());
 
-        this.buyOffers = new PriorityQueue<>(new Comparator<>() {
-            /**
-             *  BUY offers are sorted by timestamp in descending order
-             */
-            @Override
-            public int compare(Offer o1, Offer o2) {
+        this.buyOffers = new PriorityBlockingQueue<Offer>(10,new COMPARING());
 
-                if (o1.getPrice() < o2.getPrice()) {
-                    return 1;
-                } else if (o1.getPrice() > o2.getPrice()) {
-                    return -1;
-                } else {
-                    if (o1.getTimestamp().isBefore(o2.getTimestamp())) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }
-            }
-        });
+        this.sellOffers = new PriorityBlockingQueue<Offer>(10,new COMPARING());
 
-        this.sellOffers = new PriorityQueue<>(new Comparator<>() {
-            /**
-             *  SELL offers are sorted by timestamp in descending order
-             */
-            @Override
-            public int compare(Offer o1, Offer o2) {
-
-                if (o1.getPrice() < o2.getPrice()) {
-                    return 1;
-                } else if (o1.getPrice() > o2.getPrice()) {
-                    return -1;
-                } else {
-                    if (o1.getTimestamp().isBefore(o2.getTimestamp())) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-            }
-        });
 
     }
 
@@ -94,19 +77,19 @@ public class OfferBook {
         this.assetId = asset;
     }
 
-    public PriorityQueue<Offer> getBuyOffers() {
+    public PriorityBlockingQueue<Offer> getBuyOffers() {
         return buyOffers;
     }
 
-    public void setBuyOffers(PriorityQueue<Offer> buyOffers) {
+    public void setBuyOffers(PriorityBlockingQueue<Offer> buyOffers) {
         this.buyOffers = buyOffers;
     }
 
-    public PriorityQueue<Offer> getSellOffers() {
+    public PriorityBlockingQueue<Offer> getSellOffers() {
         return sellOffers;
     }
 
-    public void setSellOffers(PriorityQueue<Offer> sellOffers) {
+    public void setSellOffers(PriorityBlockingQueue<Offer> sellOffers) {
         this.sellOffers = sellOffers;
     }
 
@@ -143,7 +126,7 @@ public class OfferBook {
 
 
             }
-            System.out.println("DELETE OFFER " + offerId);
+
         }
         offerMap.remove(offerId);
 
@@ -196,7 +179,7 @@ public class OfferBook {
 
             } catch (CloneNotSupportedException e) {
 
-                System.out.println("FILL ERROR");
+
             }
         }
     }
@@ -225,6 +208,7 @@ public class OfferBook {
                                 double currentOfferFromQueueQuantity) {
 
         if (currentOfferFromQueueQuantity <= placedOfferQuantity) {
+
             executeOfferFromQueue(currentOfferFromQueue, currentOfferFromQueueQuantity);
             offersQueue.poll();
             fillPartialOrders(placedOffer, currentOfferFromQueueQuantity);
@@ -256,7 +240,7 @@ public class OfferBook {
                 partialPlacedOffer.setQuantity(placedOfferQuantity);
                 executeOfferFromQueue(partialPlacedOffer, placedOfferQuantity);
             } catch (CloneNotSupportedException e) {
-                System.out.println("Execute Error");
+
             }
             fillPartialOrders(placedOffer, placedOfferQuantity);
             placedOfferQuantity = 0;
@@ -277,7 +261,7 @@ public class OfferBook {
                 // Execute BUY offer if the price is accepted by queue offer
                 if (placedOffer.getType().equals(OfferType.BUY)) {
 
-                    if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice()) {
+                    if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice() ) {
 
                         currentOfferFromQueue.setPrice(placedOffer.getPrice());
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
@@ -288,7 +272,7 @@ public class OfferBook {
                     // Execute SELL offer if the price is accepted by queue offer
                 } else {
                     placedOffer.setPrice(currentOfferFromQueue.getPrice());
-                    if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()) {
+                    if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()  ) {
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
 
@@ -309,7 +293,7 @@ public class OfferBook {
 
 
             } catch (CloneNotSupportedException e) {
-                System.out.println("ADD ERROR");
+
             }
         } else {
 
@@ -328,25 +312,35 @@ public class OfferBook {
         // Execute BUY trade
         if (offer.getType() == OfferType.BUY) {
 
-            // Deduct credit amount
-            creditAmount = offer.getPrice() * quantity * -1;
-            organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
-                    creditAmount);
 
-            // Add assets purchased
-            assetObject.setQuantity(quantity);
-            assetService.updateOrganisationalUnitAsset(assetObject);
+
+            creditAmount = offer.getPrice() * quantity * -1;
+            if (hasEnoughCredits(offer.getOrganisationalUnit().getName(),creditAmount)){
+                // Deduct credit amount
+                organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
+                        creditAmount);
+
+                // Add assets purchased
+                assetObject.setQuantity(quantity);
+                assetService.updateOrganisationalUnitAsset(assetObject);
+            }
+
             // Execute SELL trade
         } else {
+            if (hasEnoughAssets(offer.getOrganisationalUnit(), offer.getAsset(), quantity)){
+                // Deduct assets sold
+                assetObject.setQuantity(quantity * -1);
+                assetService.updateOrganisationalUnitAsset(assetObject);
 
-            // Add credit amount
-            creditAmount = offer.getPrice() * quantity;
-            organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
-                    creditAmount);
+                // Add credit amount
+                creditAmount = offer.getPrice() * quantity;
+                organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
+                        creditAmount);
 
-            // Deduct assets sold
-            assetObject.setQuantity(quantity * -1);
-            assetService.updateOrganisationalUnitAsset(assetObject);
+            }
+
+
+
 
         }
 
@@ -368,6 +362,24 @@ public class OfferBook {
         }
     }
 
+    private boolean hasEnoughCredits(String organisationalUnitName, double deductionAmount){
+        OrganisationalUnit organisationalUnit = organisationalUnitService
+                .getOrganisationalUnitByName(organisationalUnitName);
+
+        return !((organisationalUnit.getCredits() - deductionAmount) < 0);
+
+
+    }
+
+    private boolean hasEnoughAssets(OrganisationalUnit organisationalUnit, Asset asset , double deductionAmount){
+
+        OrganisationalUnitAsset organisationalUnitAsset = organisationalUnitAssetService
+                .getOrganisationalUnitAsset(organisationalUnit,asset);
+
+        return !((organisationalUnitAsset.getQuantity() - deductionAmount) < 0);
+
+    }
+
 
     @Override
     public String toString() {
@@ -380,3 +392,5 @@ public class OfferBook {
                 '}';
     }
 }
+
+

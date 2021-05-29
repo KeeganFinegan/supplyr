@@ -1,21 +1,32 @@
 package com.supplyr.supplyr.organisationalUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.supplyr.supplyr.controller.OrganisationalUnitController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
 import com.supplyr.supplyr.exception.NotFoundException;
+import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
-import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -30,21 +41,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc(addFilters = false)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = OrganisationalUnitController.class,
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class) },
+        excludeAutoConfiguration = { SecurityAutoConfiguration.class})
 public class OrganisationalUnitControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    OrganisationalUnitService organisationalUnitService;
-
-    @MockBean
-    SupplyrUserDetailsService supplyrUserDetailsService;
+    private OrganisationalUnitService organisationalUnitService;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    PasswordEncoder passwordEncoder;
+
 
     private OrganisationalUnit it;
     private OrganisationalUnit finance;
@@ -73,7 +88,7 @@ public class OrganisationalUnitControllerTests {
 
         when(organisationalUnitService.createOrganisationalUnit(any(OrganisationalUnit.class))).thenReturn(it);
 
-        MvcResult result = mockMvc.perform(post("/api/v1/organisational-unit")
+        MvcResult result = this.mockMvc.perform(post("/api/v1/organisational-unit")
                 .characterEncoding("UTF-8")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +

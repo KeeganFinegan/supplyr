@@ -2,6 +2,8 @@ package com.supplyr.supplyr.asset;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.supplyr.supplyr.controller.AssetController;
+import com.supplyr.supplyr.controller.OrganisationalUnitController;
 import com.supplyr.supplyr.domain.Asset;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
@@ -11,14 +13,20 @@ import com.supplyr.supplyr.exception.ErrorDetails;
 import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
+import com.supplyr.supplyr.service.TradeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -32,21 +40,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = AssetController.class,
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class) },
+        excludeAutoConfiguration = { SecurityAutoConfiguration.class})
 public class AssetControllerTests {
-
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    OrganisationalUnitService organisationalUnitService;
+    private TradeService tradeService;
 
     @MockBean
-    SupplyrUserDetailsService supplyrUserDetailsService;
-    @MockBean
-    AssetService assetService;
+    private AssetService assetService;
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -18,17 +18,24 @@ import java.util.Optional;
 @Service
 public class SupplyrUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
 
-    @Autowired
-    OrganisationalUnitRepository organisationalUnitRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
-    @Autowired
-    TradeService tradeService;
+    private final OrganisationalUnitRepository organisationalUnitRepository;
+
+
+    private final PasswordEncoder passwordEncoder;
+
+
+    private final TradeService tradeService;
+
+    public SupplyrUserDetailsService(UserRepository userRepository, OrganisationalUnitRepository organisationalUnitRepository, PasswordEncoder passwordEncoder, TradeService tradeService) {
+        this.userRepository = userRepository;
+        this.organisationalUnitRepository = organisationalUnitRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tradeService = tradeService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
