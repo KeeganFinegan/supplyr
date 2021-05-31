@@ -3,7 +3,6 @@ package com.supplyr.supplyr.controller;
 import com.supplyr.supplyr.domain.Offer;
 import com.supplyr.supplyr.domain.OfferRequest;
 import com.supplyr.supplyr.service.OfferService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,9 +10,8 @@ import org.springframework.web.bind.annotation.*;
 public class OfferController {
 
 
-    private final OfferService offerService;
+    OfferService offerService;
 
-    @Autowired
     public OfferController(OfferService offerService) {
         this.offerService = offerService;
     }

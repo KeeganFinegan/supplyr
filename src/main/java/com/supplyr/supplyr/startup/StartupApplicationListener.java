@@ -13,29 +13,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartupApplicationListener {
 
-
-    private final OfferService offerService;
-
-
-    private final SupplyrUserDetailsService supplyrUserDetailsService;
-
-
-    private final OrganisationalUnitService organisationalUnitService;
+    @Autowired
+    OfferService offerService;
 
     @Autowired
-    public StartupApplicationListener(OfferService offerService, SupplyrUserDetailsService supplyrUserDetailsService, OrganisationalUnitService organisationalUnitService) {
-        this.offerService = offerService;
-        this.supplyrUserDetailsService = supplyrUserDetailsService;
-        this.organisationalUnitService = organisationalUnitService;
-    }
+    SupplyrUserDetailsService supplyrUserDetailsService;
+
+    @Autowired
+    OrganisationalUnitService organisationalUnitService;
+
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
         offerService.initiateOfferQueue();
 
+
         organisationalUnitService.createOrganisationalUnit(new OrganisationalUnit("Supplyr Admin", 100));
 
+
         supplyrUserDetailsService.registerNewAdmin(new User("admin", "12345"));
+
 
     }
 

@@ -14,19 +14,15 @@ import java.util.Optional;
 @Service
 public class TradeService {
 
+    @Autowired
+    TradeRepository tradeRepository;
 
-    private final TradeRepository tradeRepository;
+    @Autowired
+    OrganisationalUnitService organisationalUnitService;
 
-    private final OrganisationalUnitService organisationalUnitService;
+    @Autowired
+    AssetService assetService;
 
-    private final AssetService assetService;
-
-
-    public TradeService(TradeRepository tradeRepository, OrganisationalUnitService organisationalUnitService, AssetService assetService) {
-        this.tradeRepository = tradeRepository;
-        this.organisationalUnitService = organisationalUnitService;
-        this.assetService = assetService;
-    }
 
     /**
      * Add new trade into database

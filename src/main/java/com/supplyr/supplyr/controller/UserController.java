@@ -6,7 +6,6 @@ import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -20,13 +19,15 @@ import java.util.List;
 @RequestMapping("api/v1/users")
 public class UserController {
 
-    private final SupplyrUserDetailsService supplyrUserDetailsService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public UserController(SupplyrUserDetailsService supplyrUserDetailsService) {
+    OrganisationalUnitRepository organisationalUnitRepository;
 
-        this.supplyrUserDetailsService = supplyrUserDetailsService;
-    }
+    @Autowired
+    SupplyrUserDetailsService supplyrUserDetailsService;
+
 
     /**
      * Return a List of all Users

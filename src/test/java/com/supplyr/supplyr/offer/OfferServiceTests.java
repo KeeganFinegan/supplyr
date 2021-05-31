@@ -1,16 +1,14 @@
 package com.supplyr.supplyr.offer;
 
+
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.*;
 import com.supplyr.supplyr.service.OfferService;
-import com.supplyr.supplyr.service.SecurityContextService;
 import com.supplyr.supplyr.startup.StartupApplicationListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,28 +26,32 @@ import static org.mockito.Mockito.when;
 public class OfferServiceTests {
 
     @Autowired
-    private OfferService offerService;
+    OfferService offerService;
 
     @MockBean
-    private AssetRepository assetRepository;
+    AssetRepository assetRepository;
 
     @MockBean
-    private OrganisationalUnitRepository organisationalUnitRepository;
+    OrganisationalUnitRepository organisationalUnitRepository;
 
     @MockBean
-    private OfferRepository offerRepository;
+    OfferRepository offerRepository;
 
     @MockBean
-    private StartupApplicationListener startupApplicationListener;
+    StartupApplicationListener startupApplicationListener;
 
     @MockBean
     OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
     @MockBean
-    SecurityContextService securityContextService;
+    UserRepository userRepository;
 
     @MockBean
-    UserRepository userRepository;
+    SecurityContext securityContext;
+
+    @MockBean
+    Authentication authentication;
+
 
     private OrganisationalUnit it;
     private OrganisationalUnitAsset itAssets;
@@ -100,9 +102,12 @@ public class OfferServiceTests {
         when(assetRepository.findByName(buyOffer.getAsset())).thenReturn(Optional.of(cpuHours));
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-       when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn("Keegan");
+        SecurityContextHolder.setContext(securityContext);
 
-       Offer acceptedBuyOffer = offerService.addBuyOffer(buyOffer);
+        Offer acceptedBuyOffer = offerService.addBuyOffer(buyOffer);
 
         assertEquals(buyOffer.getAsset(), acceptedBuyOffer.getAsset().getName());
 
@@ -126,7 +131,10 @@ public class OfferServiceTests {
         when(assetRepository.findByName(buyOffer.getAsset())).thenReturn(Optional.of(cpuHours));
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
 
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn("Keegan");
+        SecurityContextHolder.setContext(securityContext);
 
 
         assertThrows(UnauthorizedException.class, () -> {
@@ -154,7 +162,10 @@ public class OfferServiceTests {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
 
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn(user.getUsername());
+        SecurityContextHolder.setContext(securityContext);
 
 
         assertThrows(BadRequestException.class, () -> {
@@ -183,34 +194,10 @@ public class OfferServiceTests {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
 
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
-
-        assertThrows(BadRequestException.class, () -> {
-            offerService.addBuyOffer(buyOffer);
-        });
-
-    }
-
-    @Test
-    // Add buy offer with negative price
-    public void addBuyOfferWithNegativePrice() {
-
-        user.setUsername("Keegan");
-        user.setOrganisationalUnit(it);
-
-        OfferRequest buyOffer = new OfferRequest();
-        buyOffer.setQuantity(10);
-        buyOffer.setPrice(-1);
-        buyOffer.setOrganisationalUnit("IT");
-        buyOffer.setAsset("CPU Hours");
-
-        when(organisationalUnitRepository.findByUnitName(buyOffer.getOrganisationalUnit())).thenReturn(Optional.of(it));
-
-        when(assetRepository.findByName(buyOffer.getAsset())).thenReturn(Optional.of(cpuHours));
-        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
-
-
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn(user.getUsername());
+        SecurityContextHolder.setContext(securityContext);
 
         assertThrows(BadRequestException.class, () -> {
             offerService.addBuyOffer(buyOffer);
@@ -245,7 +232,10 @@ public class OfferServiceTests {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
 
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn(user.getUsername());
+        SecurityContextHolder.setContext(securityContext);
 
         assertThrows(BadRequestException.class, () -> {
             offerService.addSellOffer(sellOffer);
@@ -280,7 +270,10 @@ public class OfferServiceTests {
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn(user.getUsername());
+        SecurityContextHolder.setContext(securityContext);
 
         assertThrows(BadRequestException.class, () -> {
             offerService.addSellOffer(sellOffer);
@@ -305,7 +298,11 @@ public class OfferServiceTests {
 
         when(assetRepository.findByName(sellOffer.getAsset())).thenReturn(Optional.of(cpuHours));
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
-        when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        when(authentication.getName()).thenReturn("Keegan");
+        SecurityContextHolder.setContext(securityContext);
 
 
         assertThrows(UnauthorizedException.class, () -> {

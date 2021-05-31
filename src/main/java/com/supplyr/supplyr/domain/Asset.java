@@ -36,5 +36,12 @@ public class Asset {
         this.name = name;
     }
 
-
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "assetId=" + assetId +
+                ", name='" + name + '\'' +
+                ", offers=" + offers +
+                '}';
+    }
 }
