@@ -16,11 +16,8 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
     @Query("SELECT s FROM Offer s WHERE s.asset.name = ?1")
     Optional<List<Offer>> findOffersByAsset_Name(String assetName);
 
-    @Query("SELECT s FROM Offer s WHERE s.organisationalUnit.name = ?1")
-    Optional<List<Offer>> findOffersByOrganisationalUnit_Name(String unitName);
-
-    @Query("SELECT SUM(o.price * o.quantity) FROM Offer o")
-    Optional<Integer> sumCreditsOnOffer();
+    @Query("SELECT SUM(o.price * o.quantity) FROM Offer o WHERE o.organisationalUnit.name = ?1")
+    Optional<Integer> sumCreditsOnOffer(String organisationalUnitName);
 
     @Query("SELECT SUM(o.quantity) FROM Offer o WHERE o.asset.name =?1")
     Optional<Integer> sumAssetsOnOffer(String assetName);

@@ -5,8 +5,8 @@ import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.InsufficientResourcesException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.exception.UnauthorizedException;
-import com.supplyr.supplyr.repository.OfferRepository;
-import com.supplyr.supplyr.repository.UserRepository;
+import com.supplyr.supplyr.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,23 +26,33 @@ public class OfferService {
 
     private final OrganisationalUnitAssetService organisationalUnitAssetService;
 
+    private final AssetRepository assetRepository;
+
     private final UserRepository userRepository;
+
+    private final OrganisationalUnitRepository organisationalUnitRepository;
+
+    private final OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
     private final SecurityContextService securityContextService;
     private HashMap<Long, OfferBook> offerBooks;
 
+    @Autowired
     public OfferService(OfferRepository offerRepository,
                         AssetService assetService,
                         OrganisationalUnitService organisationalUnitService,
                         OrganisationalUnitAssetService organisationalUnitAssetService,
-                        UserRepository userRepository,
-                        SecurityContextService securityContextService) {
+                        AssetRepository assetRepository, UserRepository userRepository,
+                        OrganisationalUnitRepository organisationalUnitRepository, OrganisationalUnitAssetRepository organisationalUnitAssetRepository, SecurityContextService securityContextService) {
 
         this.offerRepository = offerRepository;
         this.assetService = assetService;
         this.organisationalUnitService = organisationalUnitService;
         this.organisationalUnitAssetService = organisationalUnitAssetService;
+        this.assetRepository = assetRepository;
         this.userRepository = userRepository;
+        this.organisationalUnitRepository = organisationalUnitRepository;
+        this.organisationalUnitAssetRepository = organisationalUnitAssetRepository;
         this.securityContextService = securityContextService;
     }
 
@@ -71,25 +81,40 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addSellOffer(OfferRequest offerRequest) {
-        if (isValidOffer(offerRequest)) {
+        if(isValidOffer(offerRequest)) {
+            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(offerRequest.getOrganisationalUnit());
 
-            Asset offerAsset = assetService.getAssetByName(offerRequest.getAsset());
+            Optional<Asset> optionalAsset = assetRepository
+                    .findByName(offerRequest.getAsset());
 
-            OrganisationalUnit offerOrganisationalUnit = organisationalUnitService
-                    .getOrganisationalUnitByName(offerRequest.getOrganisationalUnit());
+            Asset asset = assetService.getAssetByName(offerRequest.getAsset());
 
-            double offerAssetQuantity = offerRequest.getQuantity();
+            if (optionalAsset.isPresent() && optionalOrganisationalUnit.isPresent() && isValidUser(offerRequest)) {
 
-            OrganisationalUnitAsset offerOrganisationalUnitAsset = organisationalUnitAssetService
-                    .getOrganisationalUnitAsset(offerOrganisationalUnit, offerAsset);
+                Asset offerAsset = optionalAsset.get();
+                OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
 
-            if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity) && isValidUser(offerRequest)) {
+                Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
+                        .findByOrganisationalUnitAndAsset(offerOrganisationalUnit, offerAsset);
 
-                return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
+                double offerAssetQuantity = offerRequest.getQuantity();
+
+                if (optionalOrganisationalUnitAsset.isPresent()) {
+                    OrganisationalUnitAsset offerOrganisationalUnitAsset = optionalOrganisationalUnitAsset.get();
+                    if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
+
+                        return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
+                    }
+                    throw new BadRequestException(String.format("Not enough %s to complete the offer request",
+                            optionalAsset.get().getName()));
+
+                }
+                throw new NotFoundException(String.format("Organisational Unit %s does not possess %s",
+                        optionalOrganisationalUnit.get().getName(), offerRequest.getAsset()));
+
             }
-            throw new BadRequestException(String.format("Not enough %s to complete the offer request",
-                    offerAsset));
-
+            throw new NotFoundException("Organisational Unit or Asset Type does not exist");
         } else {
             throw new BadRequestException("Invalid SELL Offer");
         }
@@ -104,24 +129,33 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addBuyOffer(OfferRequest offerRequest) {
-        if (isValidOffer(offerRequest)) {
+        if(isValidOffer(offerRequest)) {
+            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                    .findByUnitName(offerRequest.getOrganisationalUnit());
+            Optional<Asset> optionalAsset = assetRepository
+                    .findByName(offerRequest.getAsset());
 
-            Asset offerAsset = assetService.getAssetByName(offerRequest.getAsset());
 
-            OrganisationalUnit offerOrganisationalUnit = organisationalUnitService
-                    .getOrganisationalUnitByName(offerRequest.getOrganisationalUnit());
+            if (optionalOrganisationalUnit.isPresent() && optionalAsset.isPresent() && isValidUser(offerRequest)) {
 
-            double creditsNeeded = offerRequest.getPrice() * offerRequest.getQuantity();
-            if (hasSufficientCredits(offerOrganisationalUnit, creditsNeeded) && isValidUser(offerRequest)) {
+                Asset offerAsset = optionalAsset.get();
+                OrganisationalUnit offerOrganisationalUnit = optionalOrganisationalUnit.get();
 
-                return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
+                double creditsNeeded = offerRequest.getPrice() * offerRequest.getQuantity();
+                if (hasSufficientCredits(offerOrganisationalUnit, creditsNeeded)) {
+
+                    return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.BUY);
+                }
+
+                throw new BadRequestException(
+                        "Insufficient funds to complete BUY offer");
             }
-            throw new BadRequestException(
-                    "Insufficient funds to complete BUY offer");
-
-        } else {
+            throw new NotFoundException("Organisational Unit or Asset Type does not exist");
+        } else{
             throw new BadRequestException("Invalid BUY Offer");
         }
+
+
     }
 
     /**
@@ -220,30 +254,20 @@ public class OfferService {
 
     }
 
-    private List<Offer> getOffersByOrganisationalUnit(OrganisationalUnit organisationalUnit){
-        Optional<List<Offer>> optionalOffers = offerRepository
-                .findOffersByOrganisationalUnit_Name(organisationalUnit.getName());
-
-        // Return unit offers if it has any
-        if(optionalOffers.isPresent() && optionalOffers.get().size() > 0){
-            return optionalOffers.get();
-
-        }
-        throw new NotFoundException(String.format("%s has no offers", organisationalUnit.getName()));
-
-    }
-
-
     private boolean hasSufficientCredits(OrganisationalUnit organisationalUnit, double creditsNeeded) {
 
-        Optional<Integer> optionalCreditsOnOffer = offerRepository.sumCreditsOnOffer();
+        Optional<Integer> optionalCreditsOnOffer = offerRepository.sumCreditsOnOffer(organisationalUnit.getName());
         int creditsOnOffer = 0;
 
         if(optionalCreditsOnOffer.isPresent()){
             creditsOnOffer = optionalCreditsOnOffer.get();
 
 
+
         }
+        System.out.println("CREDITS ON OFFER: "+ creditsOnOffer);
+        System.out.println("CREDITS NEEDED: "+ creditsNeeded);
+        System.out.println(!(organisationalUnit.getCredits() - creditsOnOffer - creditsNeeded < 0));
         return !(organisationalUnit.getCredits() - creditsOnOffer - creditsNeeded < 0);
 
     }
