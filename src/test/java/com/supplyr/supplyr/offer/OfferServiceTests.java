@@ -1,9 +1,12 @@
 package com.supplyr.supplyr.offer;
 
+import com.supplyr.supplyr.controller.AssetController;
+import com.supplyr.supplyr.controller.OfferController;
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.*;
+import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.SecurityContextService;
 import com.supplyr.supplyr.startup.StartupApplicationListener;
@@ -12,11 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Optional;
 
@@ -24,11 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest()
+@SpringBootTest
 public class OfferServiceTests {
 
     @Autowired
     private OfferService offerService;
+
+    @Autowired
+    private AssetService assetService;
 
     @MockBean
     private AssetRepository assetRepository;
@@ -47,6 +55,7 @@ public class OfferServiceTests {
 
     @MockBean
     SecurityContextService securityContextService;
+
 
     @MockBean
     UserRepository userRepository;

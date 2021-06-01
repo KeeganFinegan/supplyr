@@ -22,9 +22,6 @@ public class OfferService {
 
     private final AssetService assetService;
 
-    private final OrganisationalUnitService organisationalUnitService;
-
-    private final OrganisationalUnitAssetService organisationalUnitAssetService;
 
     private final AssetRepository assetRepository;
 
@@ -40,15 +37,11 @@ public class OfferService {
     @Autowired
     public OfferService(OfferRepository offerRepository,
                         AssetService assetService,
-                        OrganisationalUnitService organisationalUnitService,
-                        OrganisationalUnitAssetService organisationalUnitAssetService,
                         AssetRepository assetRepository, UserRepository userRepository,
                         OrganisationalUnitRepository organisationalUnitRepository, OrganisationalUnitAssetRepository organisationalUnitAssetRepository, SecurityContextService securityContextService) {
 
         this.offerRepository = offerRepository;
         this.assetService = assetService;
-        this.organisationalUnitService = organisationalUnitService;
-        this.organisationalUnitAssetService = organisationalUnitAssetService;
         this.assetRepository = assetRepository;
         this.userRepository = userRepository;
         this.organisationalUnitRepository = organisationalUnitRepository;
