@@ -265,9 +265,6 @@ public class OfferService {
 
 
         }
-        System.out.println("CREDITS ON OFFER: "+ creditsOnOffer);
-        System.out.println("CREDITS NEEDED: "+ creditsNeeded);
-        System.out.println(!(organisationalUnit.getCredits() - creditsOnOffer - creditsNeeded < 0));
         return !(organisationalUnit.getCredits() - creditsOnOffer - creditsNeeded < 0);
 
     }

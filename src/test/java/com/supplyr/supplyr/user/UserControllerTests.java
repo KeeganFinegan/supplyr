@@ -214,7 +214,6 @@ public class UserControllerTests {
 
 
         String responseAsString = result.getResponse().getContentAsString();
-        System.out.println(responseAsString);
 
         String expectedJsonResponse = "{\"id\":1,\"username\":\"Bob\",\"organisationalUnit\":{\"id\":1,\"name" +
                 "\":\"IT\",\"credits\":250.0,\"organisationalUnitAssets\":null,\"offers\":null},\"active\"" +

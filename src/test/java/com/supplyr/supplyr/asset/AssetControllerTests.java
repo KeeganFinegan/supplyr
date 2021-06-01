@@ -10,10 +10,7 @@ import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
 import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
-import com.supplyr.supplyr.service.AssetService;
-import com.supplyr.supplyr.service.OrganisationalUnitService;
-import com.supplyr.supplyr.service.SupplyrUserDetailsService;
-import com.supplyr.supplyr.service.TradeService;
+import com.supplyr.supplyr.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +50,9 @@ public class AssetControllerTests {
 
     @MockBean
     private AssetService assetService;
+
+    @MockBean
+    private OfferService offerService;
 
     @Autowired
     private ObjectMapper objectMapper;
