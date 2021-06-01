@@ -1,0 +1,87 @@
+@keyframes example {
+  from {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  to {
+    background-color: var(--color-primary);
+  }
+}
+
+.orders-container {
+  position: absolute;
+  height: 70vh;
+  width: 300w;
+  background-color: var(--color-primary);
+  z-index: 1;
+  overflow-y: auto;
+  border-radius: 5px;
+  box-shadow: 5px 5px 13px black;
+}
+
+.icon {
+  color: black;
+  font-size: 30px;
+  margin-left: 1070px;
+  margin-top: 10px;
+  background-color: var(--color-primary);
+  padding-top: 20px;
+  cursor: pointer;
+}
+
+.column {
+  background-color: var(--color-primary);
+}
+
+.table-row {
+  justify-content: flex-start;
+  background-color: var(--color-primary);
+}
+
+.table-header {
+  background-color: var(--color-primary);
+  background-color: white;
+  color: #000;
+}
+
+.table-body {
+  background-color: var(--color-primary);
+  color: #000;
+}
+
+.title {
+  padding-bottom: 13px;
+  background-color: var(--color-primary);
+  background-color: transparent;
+  margin-left: 30px;
+}
+
+.title-centre {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 13px;
+  color: white;
+  background-color: transparent;
+  align-items: center;
+  align-content: center;
+  vertical-align: auto;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.asset-info-div {
+  background-color: transparent;
+  position: absolute;
+}
+
+.no-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  background-color: transparent;
+  color: white;
+}
+
+.chart-container {
+  background-color: white;
+  color: white;
+}

@@ -1,0 +1,41 @@
+html {
+  --text-colour: #1b1b1b;
+  --color-background: #1b1b1b;
+  --color-primary: #ea8750;
+}
+
+* {
+  background-color: var(--color-background);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins';
+  scrollbar-color: red;
+}
+
+DropdownButton {
+  background-color: var(--color-primary);
+}
+
+.dropdown-menu {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+.Toastify__toast-body {
+  background-color: transparent;
+}
+
+.Toastify__toast-container {
+  background-color: transparent;
+}
+
+svg {
+  background-color: transparent;
+}
+
+col {
+  background-color: transparent;
+}
