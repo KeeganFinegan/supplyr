@@ -32,5 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-supplyr-frontend/node_modules
-
+/supplyr-frontend/node_modules/
