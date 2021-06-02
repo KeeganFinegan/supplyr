@@ -16,8 +16,3 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
         env:
           CI: false
-      - run: mkdir staging && cp target/*.jar staging
-               - uses: actions/upload-artifact@v2
-               with:
-                 name: Package
-                 path: staging
