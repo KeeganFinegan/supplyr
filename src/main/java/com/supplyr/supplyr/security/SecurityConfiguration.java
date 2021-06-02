@@ -7,7 +7,6 @@ import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -79,7 +78,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/api/v1/organisational-unit").hasAnyRole("USER", "ADMIN");
 
 
-
     }
 
 
@@ -97,7 +95,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:8080").allowCredentials(true)
+                registry.addMapping("/**").allowedOrigins("https://localhost:8443").allowCredentials(true)
                         .allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };

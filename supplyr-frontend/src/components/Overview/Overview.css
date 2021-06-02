@@ -1,147 +1,149 @@
 .overview-container {
-  min-height: 150vh;
-  background-color: var(--color-background);
+    min-height: 150vh;
+    background-color: var(--color-background);
 }
 
 .loading-container {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-  vertical-align: middle;
-  margin-top: 280px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    margin-top: 280px;
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-content: stretch;
-  height: 180px;
-  padding: 25px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 5px 5px 13px black;
-  margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: stretch;
+    height: 180px;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 5px 13px black;
+    margin-left: 10px;
 }
 
 .card-narrow {
-  height: 410px;
-  width: 200px;
-  border-radius: 5px;
-  background-color: rgb(233, 231, 231);
+    height: 410px;
+    width: 200px;
+    border-radius: 5px;
+    background-color: rgb(233, 231, 231);
 }
 
 .card-tall {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-content: stretch;
-  height: 400px;
-  padding: 25px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 5px 5px 13px black;
-  margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: stretch;
+    height: 400px;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 5px 13px black;
+    margin-left: 10px;
 }
+
 .card-tall-table {
-  display: flex;
-  flex-direction: column;
-  row-gap: 10px;
-  height: 500px;
-  padding: 25px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 5px 5px 13px black;
-  margin-left: 10px;
-  overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    height: 500px;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 5px 13px black;
+    margin-left: 10px;
+    overflow-y: auto;
 }
 
 .card-row {
-  margin-top: 30px;
+    margin-top: 30px;
 }
 
 .card-inner {
-  vertical-align: top;
-  background-color: white;
-  justify-content: space-evenly;
+    vertical-align: top;
+    background-color: white;
+    justify-content: space-evenly;
 }
 
 .card-title {
-  color: var(--color-primary);
-  background-color: white;
+    color: var(--color-primary);
+    background-color: white;
 }
 
 .card-text {
-  color: black;
-  background-color: white;
-  font-size: 25px;
+    color: black;
+    background-color: white;
+    font-size: 25px;
 }
 
 .card-icon {
-  color: #1e1e1e;
-  background-color: white;
-  font-size: 25px;
-  padding-bottom: 5px;
+    color: #1e1e1e;
+    background-color: white;
+    font-size: 25px;
+    padding-bottom: 5px;
 }
 
 .table-row {
-  justify-content: flex-start;
+    justify-content: flex-start;
 }
 
 .table-header {
-  background-color: rgb(218, 218, 218);
-  color: #000;
+    background-color: rgb(218, 218, 218);
+    color: #000;
 }
 
 .table-body {
-  background-color: white;
-  color: #000;
+    background-color: white;
+    color: #000;
 }
+
 .dropdown {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .quantity-input {
-  border: 2px solid black;
-  border-radius: 4px;
-  box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .submit-button {
-  max-width: 100px;
+    max-width: 100px;
 }
 
 .more-info {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .orderStatus {
-  color: #000;
-  background-color: white;
-  font-size: 15px;
+    color: #000;
+    background-color: white;
+    font-size: 15px;
 }
 
-.items-container{
-  background-color: transparent;
+.items-container {
+    background-color: transparent;
 }
 
 .clickable {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .form-trade {
-  background-color: white;
-  display: block;
-  padding-right: 10px;
-  align-content: space-between;
-  align-items: stretch;
+    background-color: white;
+    display: block;
+    padding-right: 10px;
+    align-content: space-between;
+    align-items: stretch;
 }
 
 .items-text {
-  background-color: transparent;
-  padding: 15px;
-  font-size: 15px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: transparent;
+    padding: 15px;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

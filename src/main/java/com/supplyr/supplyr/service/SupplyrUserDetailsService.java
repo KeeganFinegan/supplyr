@@ -1,11 +1,12 @@
 package com.supplyr.supplyr.service;
 
-import com.supplyr.supplyr.domain.*;
+import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.SupplyrUserDetails;
+import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -147,6 +148,7 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
     /**
      * Return a List of all Users
+     *
      * @return List of all users
      */
     public List<User> getUsers() {

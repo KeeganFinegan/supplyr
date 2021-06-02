@@ -2,9 +2,7 @@ package com.supplyr.supplyr.repository;
 
 import com.supplyr.supplyr.domain.Asset;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
 import com.supplyr.supplyr.domain.Trade;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -18,13 +18,13 @@ public class AssetController {
     private final TradeService tradeService;
     private final OfferService offerService;
 
+
     @Autowired
     public AssetController(AssetService assetService, TradeService tradeService, OfferService offerService) {
         this.assetService = assetService;
         this.tradeService = tradeService;
         this.offerService = offerService;
     }
-
 
 
     /**
@@ -44,6 +44,7 @@ public class AssetController {
      */
     @PostMapping("/assets")
     public Asset addAssetType(@RequestBody Asset asset) {
+
         return assetService.addAssetType(asset);
 
     }
@@ -61,19 +62,18 @@ public class AssetController {
     }
 
     @GetMapping("/assets/{asset}/trades")
-    public List<Trade> getAssetTrades(@PathVariable String asset){
+    public List<Trade> getAssetTrades(@PathVariable String asset) {
         return tradeService.getAssetTrades(asset);
     }
 
     @GetMapping("/assets/{asset}/offer-info")
-        public LowestAskHighestBidDto getLowestAsk(@PathVariable String asset){
+    public LowestAskHighestBidDto getLowestAsk(@PathVariable String asset) {
 
-            List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid(asset);
-            LowestAskHighestBidDto lowestAskHighestBidDto = new LowestAskHighestBidDto();
-            lowestAskHighestBidDto.setLowestAsk(lowestAskHighestBid.get(0));
-            lowestAskHighestBidDto.setHighestBid(lowestAskHighestBid.get(1));
-            return lowestAskHighestBidDto;
-
+        List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid(asset);
+        LowestAskHighestBidDto lowestAskHighestBidDto = new LowestAskHighestBidDto();
+        lowestAskHighestBidDto.setLowestAsk(lowestAskHighestBid.get(0));
+        lowestAskHighestBidDto.setHighestBid(lowestAskHighestBid.get(1));
+        return lowestAskHighestBidDto;
 
 
     }

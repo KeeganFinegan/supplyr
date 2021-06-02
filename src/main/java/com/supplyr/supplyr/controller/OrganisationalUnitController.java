@@ -2,8 +2,6 @@ package com.supplyr.supplyr.controller;
 
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +17,6 @@ public class OrganisationalUnitController {
     public OrganisationalUnitController(OrganisationalUnitService organisationalUnitService) {
         this.organisationalUnitService = organisationalUnitService;
     }
-
 
 
     /**

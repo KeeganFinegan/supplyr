@@ -22,7 +22,6 @@ public class OfferService {
 
     private final AssetService assetService;
 
-
     private final AssetRepository assetRepository;
 
     private final UserRepository userRepository;
@@ -74,7 +73,7 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addSellOffer(OfferRequest offerRequest) {
-        if(isValidOffer(offerRequest)) {
+        if (isValidOffer(offerRequest)) {
             Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                     .findByUnitName(offerRequest.getOrganisationalUnit());
 
@@ -122,7 +121,7 @@ public class OfferService {
      * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addBuyOffer(OfferRequest offerRequest) {
-        if(isValidOffer(offerRequest)) {
+        if (isValidOffer(offerRequest)) {
             Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                     .findByUnitName(offerRequest.getOrganisationalUnit());
             Optional<Asset> optionalAsset = assetRepository
@@ -144,7 +143,7 @@ public class OfferService {
                         "Insufficient funds to complete BUY offer");
             }
             throw new NotFoundException("Organisational Unit or Asset Type does not exist");
-        } else{
+        } else {
             throw new BadRequestException("Invalid BUY Offer");
         }
 
@@ -252,9 +251,8 @@ public class OfferService {
         Optional<Integer> optionalCreditsOnOffer = offerRepository.sumCreditsOnOffer(organisationalUnit.getName());
         int creditsOnOffer = 0;
 
-        if(optionalCreditsOnOffer.isPresent()){
+        if (optionalCreditsOnOffer.isPresent()) {
             creditsOnOffer = optionalCreditsOnOffer.get();
-
 
 
         }
@@ -269,8 +267,8 @@ public class OfferService {
 
         int assetsOnOffer = 0;
 
-        if(optionalAssetsOnOffer.isPresent()){
-            assetsOnOffer= optionalAssetsOnOffer.get();
+        if (optionalAssetsOnOffer.isPresent()) {
+            assetsOnOffer = optionalAssetsOnOffer.get();
         }
 
         return !(organisationalUnitAsset.getQuantity() - assetsOnOffer - assetQuantityNeeded < 0);

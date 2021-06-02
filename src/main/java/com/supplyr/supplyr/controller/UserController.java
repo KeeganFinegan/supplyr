@@ -1,19 +1,11 @@
 package com.supplyr.supplyr.controller;
 
-import com.supplyr.supplyr.domain.ControllerResponse;
-import com.supplyr.supplyr.domain.Notification;
 import com.supplyr.supplyr.domain.User;
-import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
-import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,6 +22,7 @@ public class UserController {
 
     /**
      * Return a List of all Users
+     *
      * @return List of all users
      */
     @GetMapping()
@@ -52,7 +45,7 @@ public class UserController {
     @ExceptionHandler(UsernameNotFoundException.class)
     public User getUserObjectByUsername(@PathVariable String username) {
 
-            return supplyrUserDetailsService.getUserByUsername(username);
+        return supplyrUserDetailsService.getUserByUsername(username);
     }
 
     /**
@@ -89,7 +82,7 @@ public class UserController {
      * @return Updated User
      */
     @PutMapping("/{username}")
-    public User updateUserPassword( @RequestBody User updatedUser, @PathVariable String username) {
+    public User updateUserPassword(@RequestBody User updatedUser, @PathVariable String username) {
         return supplyrUserDetailsService.updateUserPassword(updatedUser, username);
     }
 

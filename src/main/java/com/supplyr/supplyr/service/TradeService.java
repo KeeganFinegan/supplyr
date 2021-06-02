@@ -1,10 +1,11 @@
 package com.supplyr.supplyr.service;
 
-import com.supplyr.supplyr.controller.UserController;
-import com.supplyr.supplyr.domain.*;
+import com.supplyr.supplyr.domain.Asset;
+import com.supplyr.supplyr.domain.Offer;
+import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.Trade;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.TradeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,21 +50,20 @@ public class TradeService {
 
     }
 
-    public List<Trade> getTradesByUnit(String organisationalUnitName){
+    public List<Trade> getTradesByUnit(String organisationalUnitName) {
         try {
             OrganisationalUnit organisationalUnit = organisationalUnitService
                     .getOrganisationalUnitByName(organisationalUnitName);
             Optional<List<Trade>> optional = tradeRepository.findTradesByOrganisationalUnit(organisationalUnit);
 
-            if (optional.isPresent()){
+            if (optional.isPresent()) {
                 return tradeRepository.findTradesByOrganisationalUnit(organisationalUnit).get();
             } else {
                 throw new NotFoundException("No trades");
             }
 
 
-
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new NotFoundException("Could not find organisational unit " + organisationalUnitName);
         }
 
@@ -74,13 +74,13 @@ public class TradeService {
         try {
             Asset asset = assetService.getAssetByName(assetName);
             Optional<List<Trade>> optionalTrades = tradeRepository.findTradesByAsset(asset);
-            if (optionalTrades.isPresent()){
+            if (optionalTrades.isPresent()) {
                 return optionalTrades.get();
             } else {
                 throw new NotFoundException("No trades of asset type " + assetName);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new NotFoundException(e.getMessage());
         }
 

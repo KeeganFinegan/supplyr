@@ -21,13 +21,13 @@ public class OrganisationalUnitAssetService {
     }
 
 
-    public OrganisationalUnitAsset getOrganisationalUnitAsset(OrganisationalUnit organisationalUnit, Asset asset){
+    public OrganisationalUnitAsset getOrganisationalUnitAsset(OrganisationalUnit organisationalUnit, Asset asset) {
         Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
                 .findByOrganisationalUnitAndAsset(organisationalUnit, asset);
 
-        if (optionalOrganisationalUnitAsset.isPresent()){
+        if (optionalOrganisationalUnitAsset.isPresent()) {
             return optionalOrganisationalUnitAsset.get();
-        }else {
+        } else {
             throw new NotFoundException(String.format("Organisational Unit %s does not possess %s",
                     organisationalUnit.getName(), asset.getName()));
         }

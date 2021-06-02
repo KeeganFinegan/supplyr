@@ -1,9 +1,7 @@
 package com.supplyr.supplyr.domain;
 
-import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
-import org.apache.tomcat.util.collections.SynchronizedQueue;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -59,12 +57,12 @@ public class OfferBook {
      */
     public OfferBook(Long assetId) {
         this.assetId = assetId;
-        this.filledOffers = Collections.synchronizedMap( new HashMap<>());
-        this.offerMap = Collections.synchronizedMap( new HashMap<>());
+        this.filledOffers = Collections.synchronizedMap(new HashMap<>());
+        this.offerMap = Collections.synchronizedMap(new HashMap<>());
 
-        this.buyOffers = new PriorityBlockingQueue<Offer>(10,new COMPARING());
+        this.buyOffers = new PriorityBlockingQueue<Offer>(10, new COMPARING());
 
-        this.sellOffers = new PriorityBlockingQueue<Offer>(10,new COMPARING());
+        this.sellOffers = new PriorityBlockingQueue<Offer>(10, new COMPARING());
 
 
     }
@@ -165,12 +163,13 @@ public class OfferBook {
      * @param orderQuantity   quantity to be partially fulfilled
      */
     private void fillPartialOrders(Offer offerToBeFilled, double orderQuantity) {
-
+        // If the offer has already been partially filled, update the filled order with new quantity
         if (filledOffers.containsKey(offerToBeFilled.getId())) {
             filledOffers.get(offerToBeFilled.getId()).setQuantity(filledOffers
                     .get(offerToBeFilled.getId()).getQuantity() + orderQuantity);
 
         } else {
+            // Create new filled offer for partial fullfillment
             try {
                 Offer partialPlacedOffer = (Offer) offerToBeFilled.clone();
                 partialPlacedOffer.setQuantity(orderQuantity);
@@ -178,7 +177,6 @@ public class OfferBook {
 
 
             } catch (CloneNotSupportedException e) {
-
 
             }
         }
@@ -209,6 +207,7 @@ public class OfferBook {
 
         if (currentOfferFromQueueQuantity <= placedOfferQuantity) {
 
+            // Process a matched offer in the offer book and database
             executeOfferFromQueue(currentOfferFromQueue, currentOfferFromQueueQuantity);
             offersQueue.poll();
             fillPartialOrders(placedOffer, currentOfferFromQueueQuantity);
@@ -261,7 +260,7 @@ public class OfferBook {
                 // Execute BUY offer if the price is accepted by queue offer
                 if (placedOffer.getType().equals(OfferType.BUY)) {
 
-                    if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice() ) {
+                    if (placedOffer.getPrice() >= currentOfferFromQueue.getPrice()) {
 
                         currentOfferFromQueue.setPrice(placedOffer.getPrice());
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
@@ -272,7 +271,7 @@ public class OfferBook {
                     // Execute SELL offer if the price is accepted by queue offer
                 } else {
                     placedOffer.setPrice(currentOfferFromQueue.getPrice());
-                    if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()  ) {
+                    if (placedOffer.getPrice() <= currentOfferFromQueue.getPrice()) {
                         placedOfferQuantity = executeOffer(placedOffer, placedOfferQuantity, offersQueue,
                                 currentOfferFromQueue, currentOfferFromQueueQuantity);
 
@@ -313,9 +312,8 @@ public class OfferBook {
         if (offer.getType() == OfferType.BUY) {
 
 
-
             creditAmount = offer.getPrice() * quantity * -1;
-            if (hasEnoughCredits(offer.getOrganisationalUnit().getName(),creditAmount)){
+            if (hasEnoughCredits(offer.getOrganisationalUnit().getName(), creditAmount)) {
                 // Deduct credit amount
                 organisationalUnitService.updateOrganisationalUnitCredits(assetObject.getOrganisationalUnitId(),
                         creditAmount);
@@ -327,7 +325,7 @@ public class OfferBook {
 
             // Execute SELL trade
         } else {
-            if (hasEnoughAssets(offer.getOrganisationalUnit(), offer.getAsset(), quantity)){
+            if (hasEnoughAssets(offer.getOrganisationalUnit(), offer.getAsset(), quantity)) {
                 // Deduct assets sold
                 assetObject.setQuantity(quantity * -1);
                 assetService.updateOrganisationalUnitAsset(assetObject);
@@ -340,15 +338,13 @@ public class OfferBook {
             }
 
 
-
-
         }
 
 
     }
 
     /**
-     * Determine if two orders can be executed
+     * Determine if two orders are from the same organisational unit or not
      *
      * @param offer1 first offer in potential trade
      * @param offer2 second offer in potential trade
@@ -362,7 +358,7 @@ public class OfferBook {
         }
     }
 
-    private boolean hasEnoughCredits(String organisationalUnitName, double deductionAmount){
+    private boolean hasEnoughCredits(String organisationalUnitName, double deductionAmount) {
         OrganisationalUnit organisationalUnit = organisationalUnitService
                 .getOrganisationalUnitByName(organisationalUnitName);
 
@@ -371,10 +367,10 @@ public class OfferBook {
 
     }
 
-    private boolean hasEnoughAssets(OrganisationalUnit organisationalUnit, Asset asset , double deductionAmount){
+    private boolean hasEnoughAssets(OrganisationalUnit organisationalUnit, Asset asset, double deductionAmount) {
 
         OrganisationalUnitAsset organisationalUnitAsset = organisationalUnitAssetService
-                .getOrganisationalUnitAsset(organisationalUnit,asset);
+                .getOrganisationalUnitAsset(organisationalUnit, asset);
 
         return !((organisationalUnitAsset.getQuantity() - deductionAmount) < 0);
 

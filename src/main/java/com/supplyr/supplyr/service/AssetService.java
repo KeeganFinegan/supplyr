@@ -69,6 +69,7 @@ public class AssetService {
             throw new AlreadyExistsException("Asset " + asset.getName() + " already exists");
 
         } else {
+
             return assetRepository.save(asset);
         }
 

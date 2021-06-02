@@ -1,7 +1,6 @@
 package com.supplyr.supplyr.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supplyr.supplyr.controller.AssetController;
 import com.supplyr.supplyr.controller.UserController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.User;
@@ -11,9 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -36,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(controllers = UserController.class,
-        excludeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class) },
-        excludeAutoConfiguration = { SecurityAutoConfiguration.class})
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class)},
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 public class UserControllerTests {
 
     @Autowired

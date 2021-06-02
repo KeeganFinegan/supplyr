@@ -1,121 +1,122 @@
 .side-nav {
-  margin-right: 100px;
+    margin-right: 100px;
 }
 
 .admin-container {
-  padding-bottom: 70px;
-  background-color: var(--color-background);
+    padding-bottom: 70px;
+    background-color: var(--color-background);
 }
 
 .admin-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-content: stretch;
-  height: 350px;
-  width: 800px;
-  padding: 25px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 5px 5px 13px black;
-  margin-left: 10px;
-  margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: stretch;
+    height: 350px;
+    width: 800px;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 5px 13px black;
+    margin-left: 10px;
+    margin-top: 30px;
 }
 
 .admin-card-tall {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-content: stretch;
-  height: 400px;
-  width: 800px;
-  padding: 25px;
-  border-radius: 5px;
-  background-color: white;
-  box-shadow: 5px 5px 13px black;
-  margin-left: 10px;
-  margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: stretch;
+    height: 400px;
+    width: 800px;
+    padding: 25px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 5px 5px 13px black;
+    margin-left: 10px;
+    margin-top: 30px;
 }
+
 NavLink {
-  background-color: var(--color-primary);
+    background-color: var(--color-primary);
 }
 
 .admin-input {
-  background-color: white;
+    background-color: white;
 
-  margin-right: 20px;
-  border: 2px solid black;
-  border-radius: 4px;
-  box-sizing: border-box;
+    margin-right: 20px;
+    border: 2px solid black;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .topspace {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 .admin-form {
-  background-color: white;
-  background: white;
+    background-color: white;
+    background: white;
 }
 
 .admin-card-title {
-  color: var(--color-primary);
-  font-size: 25px;
-  margin-bottom: 35px;
+    color: var(--color-primary);
+    font-size: 25px;
+    margin-bottom: 35px;
 }
 
 .admin-input-title {
-  margin-left: 20px;
-  font-weight: 100;
-  font-size: 15px;
-  background-color: white;
+    margin-left: 20px;
+    font-weight: 100;
+    font-size: 15px;
+    background-color: white;
 }
 
 .user-dropdown {
-  padding-top: 15px;
-  margin-left: 10px;
+    padding-top: 15px;
+    margin-left: 10px;
 }
 
 .user-button {
-  width: 120px;
-  margin-top: 20px;
-  margin-left: 10px;
+    width: 120px;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 
 .response-status-error {
-  color: rgb(221, 0, 0);
-  background-color: white;
-  font-size: 12px;
-  margin-top: 10px;
-  margin-left: 19px;
-  margin-bottom: -8px;
+    color: rgb(221, 0, 0);
+    background-color: white;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-left: 19px;
+    margin-bottom: -8px;
 }
 
 .response-status-success {
-  color: rgb(0, 221, 66);
-  background-color: white;
-  font-size: 12px;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-bottom: -8px;
+    color: rgb(0, 221, 66);
+    background-color: white;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: -8px;
 }
 
 .access-denied {
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  font-size: 30px;
-  color: var(--color-primary);
-  background-color: var(--color-background);
-  vertical-align: middle;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    font-size: 30px;
+    color: var(--color-primary);
+    background-color: var(--color-background);
+    vertical-align: middle;
 }
 
 .cont {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  vertical-align: middle;
-  height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    vertical-align: middle;
+    height: 60vh;
 }

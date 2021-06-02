@@ -4,8 +4,6 @@ import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.repository.AssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,16 +68,16 @@ public class OrganisationalUnitService {
      */
     public OrganisationalUnit createOrganisationalUnit(OrganisationalUnit organisationalUnit) {
 
-            Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
-                    .findByUnitName(organisationalUnit.getName());
+        Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
+                .findByUnitName(organisationalUnit.getName());
 
-            if (optUnit.isPresent()) {
-                throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
-                        + " already exists");
-            } else {
+        if (optUnit.isPresent()) {
+            throw new AlreadyExistsException("Organisational Unit " + organisationalUnit.getName()
+                    + " already exists");
+        } else {
 
-                return organisationalUnitRepository.save(organisationalUnit);
-            }
+            return organisationalUnitRepository.save(organisationalUnit);
+        }
 
     }
 
@@ -108,8 +106,6 @@ public class OrganisationalUnitService {
                     organisationalUnitId));
         }
     }
-
-
 
 
 }

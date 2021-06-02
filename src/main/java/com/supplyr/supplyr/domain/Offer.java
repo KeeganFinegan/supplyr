@@ -15,7 +15,7 @@ public class Offer implements Cloneable {
     @JoinColumn(name = "organisational_unit_id")
     private OrganisationalUnit organisationalUnit;
 
-    @ManyToOne( fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
