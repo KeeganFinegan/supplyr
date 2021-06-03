@@ -3,8 +3,11 @@ package com.supplyr.supplyr.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.controller.UserController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.SupplyrUserDetails;
 import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.NotFoundException;
+import com.supplyr.supplyr.security.ApplicationUserPermission;
+import com.supplyr.supplyr.security.ApplicationUserRole;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -175,15 +179,53 @@ public class UserControllerTests {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        //verify(supplyrUserDetailsService).registerNewUser("IT",userRequest);
+        String responseAsString = result.getResponse().getContentAsString();
+
+        User objectResponse = objectMapper.readValue(responseAsString,User.class);
+
+
+        assertEquals("Bob", objectResponse.getUsername());
+        assertEquals("IT", objectResponse.getOrganisationalUnit().getName());
+        assertEquals("ROLE_USER",objectResponse.getRoles());
+    }
+
+
+    @Test
+    public void addNewAdmin() throws Exception {
+
+        User userRequest = new User();
+        userRequest.setUsername("Bob");
+        userRequest.setPassword("password");
+
+        User userRegistered = new User();
+        userRegistered.setUsername("Bob");
+        userRegistered.setPassword("password");
+        userRegistered.setActive(true);
+        userRegistered.setOrganisationalUnit(it);
+        userRegistered.setRoles("ROLE_ADMIN");
+
+        when(supplyrUserDetailsService.registerNewAdmin( any(User.class))).thenReturn(userRegistered);
+
+        MvcResult result = mockMvc.perform(post("/api/v1/users/admin")
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"username\": \"Bob\",\n" +
+                        "    \"password\": \"p\"\n" +
+                        "}")
+        )
+
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
 
         String responseAsString = result.getResponse().getContentAsString();
 
-        String expectedJsonResponse = "{\"id\":null,\"username\":\"Bob\",\"organisationalUnit\":{\"id\":1,\"name\":\"IT" +
-                "\",\"credits\":250.0,\"organisationalUnitAssets\":null,\"offers\":null},\"active\":true,\"roles\":\"" +
-                "ROLE_USER\"}";
+        User objectResponse = objectMapper.readValue(responseAsString,User.class);
 
-        assertEquals(expectedJsonResponse, responseAsString);
+        assertEquals("Bob", objectResponse.getUsername());
+        assertEquals("IT", objectResponse.getOrganisationalUnit().getName());
+        assertEquals("ROLE_ADMIN",objectResponse.getRoles());
     }
 
     @Test

@@ -31,15 +31,7 @@ public class UserController {
         return supplyrUserDetailsService.getUsers();
     }
 
-    /**
-     * Return a User with a given Id
-     */
-//    @GetMapping("/{username}")
-//    @ResponseBody
-//    public UserDetails getUserDetailsByUsername(@PathVariable String username) {
-//        return supplyrUserDetailsService.loadUserByUsername(username);
-//
-//    }
+
     @GetMapping("/{username}")
     @ResponseBody
     @ExceptionHandler(UsernameNotFoundException.class)

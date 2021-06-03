@@ -2,6 +2,7 @@ package com.supplyr.supplyr.trade;
 
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
+import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.TradeRepository;
 import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
@@ -135,7 +136,59 @@ public class TradeServiceTests {
 
     }
 
+    @Test
+    public void getTradesByNonExistentUnit() {
 
+        List<Trade> tradeList = new ArrayList<>();
+
+        when(organisationalUnitService.getOrganisationalUnitByName("IT"))
+                .thenThrow(new NotFoundException("Could not find Organisational Unit IT"));
+
+
+        assertThrows(NotFoundException.class,() -> {
+            tradeService.getTradesByUnit("IT");
+        });
+
+
+    }
+
+    @Test
+    public void getAssetTrades() {
+
+        OrganisationalUnit finance = new OrganisationalUnit();
+        finance.setName("Finance");
+        finance.setId(2L);
+        finance.setCredits(100);
+
+
+        Trade trade = new Trade();
+        trade.setPrice(5);
+        trade.setQuantity(5);
+        trade.setType(OfferType.BUY);
+        trade.setId(1L);
+        trade.setAsset(cpuHours);
+        trade.setOrganisationalUnit(it);
+
+        Trade trade2 = new Trade();
+        trade.setPrice(5);
+        trade.setQuantity(10);
+        trade.setType(OfferType.SELL);
+        trade.setId(2L);
+        trade.setAsset(cpuHours);
+        trade.setOrganisationalUnit(finance);
+
+        List<Trade> tradeList = new ArrayList<>();
+        tradeList.add(trade);
+        tradeList.add(trade2);
+        when(assetService.getAssetByName("CPU Hours")).thenReturn(cpuHours);
+        when(tradeRepository.findTradesByAsset(cpuHours)).thenReturn(Optional.of(tradeList));
+
+        List<Trade> retrievedTradeList = tradeService.getAssetTrades("CPU Hours");
+
+        assertEquals("CPU Hours",retrievedTradeList.get(0).getAsset().getName());
+
+
+    }
 
 
 }

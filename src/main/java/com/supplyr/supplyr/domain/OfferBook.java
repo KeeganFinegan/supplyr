@@ -194,7 +194,6 @@ public class OfferBook {
     private void executeOfferFromQueue(Offer currentOfferFromQueue, double currentOfferFromQueueQuantity) {
 
         if (filledOffers.containsKey(currentOfferFromQueue.getId())) {
-            double newOfferQuantity = currentOfferFromQueue.getQuantity() - currentOfferFromQueueQuantity;
             double newTradeQuantity = filledOffers.get(currentOfferFromQueue
                     .getId()).getQuantity() + currentOfferFromQueueQuantity;
 

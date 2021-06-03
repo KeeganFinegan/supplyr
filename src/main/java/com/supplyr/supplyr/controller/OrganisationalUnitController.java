@@ -51,15 +51,4 @@ public class OrganisationalUnitController {
         return organisationalUnitService.createOrganisationalUnit(organisationalUnit);
     }
 
-    /**
-     * REST endpoint to delete an existing Organisational Unit
-     *
-     * @param organisationalUnitId Id of Organisational Unit to be deleted
-     */
-    @PostMapping("/delete/{organisationalUnitId}")
-    public void deleteOrganisationalUnit(@PathVariable Long organisationalUnitId) {
-        organisationalUnitService.deleteById(organisationalUnitId);
-    }
-
-
 }

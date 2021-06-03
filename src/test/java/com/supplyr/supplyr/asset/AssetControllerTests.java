@@ -3,10 +3,7 @@ package com.supplyr.supplyr.asset;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.controller.AssetController;
-import com.supplyr.supplyr.domain.Asset;
-import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
-import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
+import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.ErrorDetails;
 import com.supplyr.supplyr.service.AssetService;
@@ -185,6 +182,59 @@ public class AssetControllerTests {
         OrganisationalUnitAsset objectResponse = objectMapper.readValue(responseAsString, OrganisationalUnitAsset.class);
 
         assertEquals("CPU Hours", objectResponse.getAsset().getName());
+
+    }
+
+    @Test
+    public void get_asset_trades() throws Exception {
+
+        Trade trade1 = new Trade();
+        trade1.setAsset(cpuHours);
+        trade1.setOrganisationalUnit(it);
+        trade1.setPrice(10);
+        trade1.setQuantity(2);
+
+        Trade trade2 = new Trade();
+        trade2.setAsset(cpuHours);
+        trade2.setOrganisationalUnit(it);
+        trade2.setPrice(20);
+        trade2.setQuantity(2);
+
+        List<Trade> tradeList = new ArrayList<>();
+        tradeList.add(trade1);
+        tradeList.add(trade2);
+
+        when(tradeService.getAssetTrades("IT")).thenReturn(tradeList);
+        MvcResult result = mockMvc.perform(get("/api/v1/assets/IT/trades"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseAsString = result.getResponse().getContentAsString();
+        Trade[] objectResponse = objectMapper.readValue(responseAsString, Trade[].class);
+
+        assertEquals("CPU Hours",objectResponse[0].getAsset().getName());
+        assertEquals(10,objectResponse[0].getPrice());
+    }
+
+    @Test
+    public void get_lowest_ask_highest_bid() throws Exception {
+
+        List<Double> lowestAskHighestBid = new ArrayList<>();
+        lowestAskHighestBid.add(19.0);
+        lowestAskHighestBid.add(20.5);
+
+        when(offerService.getLowestAskAndHighestBid("CPU Hours")).thenReturn(lowestAskHighestBid);
+        MvcResult result = mockMvc.perform(get("/api/v1/assets/CPU Hours/offer-info"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseAsString = result.getResponse().getContentAsString();
+        LowestAskHighestBidDto objectResponse = objectMapper.readValue(responseAsString, LowestAskHighestBidDto.class);
+
+        assertEquals(19.0,objectResponse.getLowestAsk());
+        assertEquals(20.5,objectResponse.getHighestBid());
 
     }
 

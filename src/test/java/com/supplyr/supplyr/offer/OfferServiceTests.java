@@ -15,6 +15,8 @@ import org.mockito.*;
 import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -386,4 +388,71 @@ public class OfferServiceTests {
             offerService.deleteOfferById(1L);
         });
 
-    }}
+    }
+
+    @Test
+    public void getLowestAskHighestBid() {
+
+        Offer buyOffer1 = new Offer();
+        buyOffer1.setQuantity(10);
+        buyOffer1.setPrice(20);
+        buyOffer1.setType(OfferType.BUY);
+        buyOffer1.setOrganisationalUnit(it);
+        buyOffer1.setAsset(cpuHours);
+        buyOffer1.setId(1L);
+
+        Offer buyOffer2 = new Offer();
+        buyOffer2.setQuantity(10);
+        buyOffer2.setPrice(19);
+        buyOffer2.setType(OfferType.BUY);
+        buyOffer2.setOrganisationalUnit(it);
+        buyOffer2.setAsset(cpuHours);
+        buyOffer2.setId(1L);
+
+        Offer buyOffer3 = new Offer();
+        buyOffer3.setQuantity(10);
+        buyOffer3.setPrice(14);
+        buyOffer3.setType(OfferType.BUY);
+        buyOffer3.setOrganisationalUnit(it);
+        buyOffer3.setAsset(cpuHours);
+        buyOffer3.setId(1L);
+
+        Offer sellOffer1 = new Offer();
+        sellOffer1.setQuantity(10);
+        sellOffer1.setPrice(20);
+        sellOffer1.setType(OfferType.SELL);
+        sellOffer1.setOrganisationalUnit(it);
+        sellOffer1.setAsset(cpuHours);
+        sellOffer1.setId(1L);
+
+        Offer sellOffer2 = new Offer();
+        sellOffer2.setQuantity(10);
+        sellOffer2.setPrice(19);
+        sellOffer2.setType(OfferType.SELL);
+        sellOffer2.setOrganisationalUnit(it);
+        sellOffer1.setAsset(cpuHours);
+        sellOffer2.setId(1L);
+
+        List<Offer> offerList = new ArrayList<>();
+        offerList.add(buyOffer1);
+        offerList.add(sellOffer2);
+        offerList.add(buyOffer3);
+        offerList.add(buyOffer3);
+        offerList.add(sellOffer1);
+        offerList.add(buyOffer2);
+
+        when(offerRepository.findOffersByAsset_Name("CPU Hours")).thenReturn(Optional.of(offerList));
+
+        List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid("CPU Hours");
+
+        assertEquals(19,lowestAskHighestBid.get(0));
+        assertEquals(20,lowestAskHighestBid.get(1));
+
+
+    }
+
+
+
+
+}
+

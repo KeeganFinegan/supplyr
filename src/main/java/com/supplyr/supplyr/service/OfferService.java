@@ -2,7 +2,6 @@ package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
-import com.supplyr.supplyr.exception.InsufficientResourcesException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.*;
@@ -76,7 +75,7 @@ public class OfferService {
      *
      * @param offerRequest Details of offer to be added
      * @return Offer that was added
-     * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
+     * @throws BadRequestException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addSellOffer(OfferRequest offerRequest) {
         if (isValidOffer(offerRequest)) {
@@ -112,7 +111,7 @@ public class OfferService {
      *
      * @param offerRequest Details of offer to be added
      * @return Offer that was added
-     * @throws InsufficientResourcesException When organisation does not have enough credits or assets to complete offer
+     * @throws BadRequestException When organisation does not have enough credits or assets to complete offer
      */
     public Offer addBuyOffer(OfferRequest offerRequest) {
         if (isValidOffer(offerRequest)) {
@@ -312,6 +311,12 @@ public class OfferService {
     }
 
     // Get the current lowest ask
+    /**
+     * Return the current lowest ask and highest bid for a particular Asset
+     *
+     * @param asset Asset to receive information for
+     * @return A list with the lowest ask at index 0 and highest bid at index 1
+     */
     public List<Double> getLowestAskAndHighestBid(String asset) {
 
         Optional<List<Offer>> offerList = offerRepository.findOffersByAsset_Name(asset);

@@ -67,7 +67,7 @@ public class AssetController {
     }
 
     @GetMapping("/assets/{asset}/offer-info")
-    public LowestAskHighestBidDto getLowestAsk(@PathVariable String asset) {
+    public LowestAskHighestBidDto getLowestAskHighestBid(@PathVariable String asset) {
 
         List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid(asset);
         LowestAskHighestBidDto lowestAskHighestBidDto = new LowestAskHighestBidDto();

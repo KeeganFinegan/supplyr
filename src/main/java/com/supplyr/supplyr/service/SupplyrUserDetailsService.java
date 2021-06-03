@@ -48,7 +48,6 @@ public class SupplyrUserDetailsService implements UserDetailsService {
 
     }
 
-
     /**
      * Add new user into the database
      *

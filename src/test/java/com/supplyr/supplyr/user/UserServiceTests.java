@@ -41,7 +41,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void successfullyNewUserToTheDatabase() {
+    public void successfullyNewUser() {
 
         User user = new User("Bob", "password");
         OrganisationalUnit organisationalUnit = new OrganisationalUnit();
@@ -71,7 +71,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void successfullyNewAdminToTheDatabase() {
+    public void successfullyNewAdmin() {
 
         User user = new User("Bob", "password");
         OrganisationalUnit organisationalUnit = new OrganisationalUnit();
@@ -101,7 +101,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void addExistingUserToTheDatabase() {
+    public void addExistingUser() {
 
         User user = new User("Bob", "password");
         OrganisationalUnit organisationalUnit = new OrganisationalUnit();
