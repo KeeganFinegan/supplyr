@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class OrganisationalUnitService {
 
@@ -45,8 +46,6 @@ public class OrganisationalUnitService {
      */
     public OrganisationalUnit getOrganisationalUnitByName(String organisationalUnitName) {
 
-        try {
-
             Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
                     .findByUnitName(organisationalUnitName);
 
@@ -55,9 +54,7 @@ public class OrganisationalUnitService {
             } else {
                 throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
             }
-        } catch (Exception e) {
-            throw new BadRequestException("Invalid request");
-        }
+
     }
 
     /**
@@ -85,6 +82,9 @@ public class OrganisationalUnitService {
     public void updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
         organisationalUnitRepository
                 .findById(organisationalUnitId).map(organisationalUnit -> {
+                    if ((organisationalUnit.getCredits() + creditAmount) < 0){
+                        throw new BadRequestException("A unit cannot have negative credits");
+                    }
             organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
             return organisationalUnit;
         }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "

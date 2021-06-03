@@ -164,7 +164,7 @@ export const Asset = () => {
                         : success(setAddAssetResponse, 'Asset distributed!')
                     : null}
 
-                {assetQuantity && addAssetName != 'Select Asset' && addAssetUnit ? (
+                {assetQuantity && addAssetName !== 'Select Asset' && addAssetUnit !== 'Select Unit' ? (
                     <Button
                         variant="secondary"
                         className="user-button "

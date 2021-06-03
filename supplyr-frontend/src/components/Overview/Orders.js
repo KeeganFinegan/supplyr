@@ -56,7 +56,7 @@ export const Orders = (props) => {
                         }}
                     ></i>
                     <h3 className="title">{props.type} Orders</h3>
-
+                    <div className="table-container">
                     <Table striped hover size="sm">
                         <thead>
                         <tr className="table-row table-header">
@@ -93,6 +93,7 @@ export const Orders = (props) => {
                         })}
                         </tbody>
                     </Table>
+                    </div>
                 </Col>
             </Row>
         </Container>

@@ -2,7 +2,10 @@ package com.supplyr.supplyr.domain;
 
 import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -25,6 +28,7 @@ class COMPARING implements Comparator<Offer> {
     }
 }
 
+@Configurable
 public class OfferBook {
 
     private Long assetId;
@@ -40,17 +44,22 @@ public class OfferBook {
     // Inject OfferService class into non-bean class
     OfferService offerService = BeanUtility.getBean(OfferService.class);
 
+
     // Inject OfferService class into non-bean class
     TradeService tradeService = BeanUtility.getBean(TradeService.class);
+
 
     // Inject OfferService class into non-bean class
     AssetService assetService = BeanUtility.getBean(AssetService.class);
 
+
     // Inject OfferService class into non-bean class
     OrganisationalUnitService organisationalUnitService = BeanUtility.getBean(OrganisationalUnitService.class);
 
+
     // Inject OfferService class into non-bean class
     OrganisationalUnitAssetService organisationalUnitAssetService = BeanUtility.getBean(OrganisationalUnitAssetService.class);
+
 
     /**
      * Custom constructor to override compare method for BUY and SELL priority queues

@@ -2,6 +2,7 @@ package com.supplyr.supplyr.service;
 
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
@@ -21,11 +22,15 @@ public class AssetService {
 
     private final OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
+    private final OrganisationalUnitService organisationalUnitService;
+
+
     @Autowired
-    public AssetService(AssetRepository assetRepository, OrganisationalUnitRepository organisationalUnitRepository, OrganisationalUnitAssetRepository organisationalUnitAssetRepository) {
+    public AssetService(AssetRepository assetRepository, OrganisationalUnitRepository organisationalUnitRepository, OrganisationalUnitAssetRepository organisationalUnitAssetRepository, OrganisationalUnitService organisationalUnitService) {
         this.assetRepository = assetRepository;
         this.organisationalUnitRepository = organisationalUnitRepository;
         this.organisationalUnitAssetRepository = organisationalUnitAssetRepository;
+        this.organisationalUnitService = organisationalUnitService;
     }
 
     /**
@@ -90,21 +95,27 @@ public class AssetService {
             Optional<OrganisationalUnitAsset> optionalOrganisationalUnitAsset = organisationalUnitAssetRepository
                     .findByOrganisationalUnitAndAsset(optionalOrganisationalUnit.get(), optionalAsset.get());
 
-            if (optionalOrganisationalUnitAsset.isPresent()) {
-
-
-            } else {
+            // Add organisational unit asset if it does not exist
+            if (optionalOrganisationalUnitAsset.isEmpty()) {
                 addOrganisationalUnitAsset(assetObject);
 
             }
-
             if (optionalOrganisationalUnitAsset.isPresent()) {
                 double oldQuantity = optionalOrganisationalUnitAsset.get().getQuantity();
                 double newQuantity = oldQuantity + assetObject.getQuantity();
                 OrganisationalUnitAsset organisationalUnitAsset = optionalOrganisationalUnitAsset.get();
 
+
+
                 organisationalUnitAsset.setQuantity(newQuantity);
-                organisationalUnitAssetRepository.save(organisationalUnitAsset);
+                if (!(organisationalUnitAsset.getQuantity() < 0)){
+                    organisationalUnitAssetRepository.save(organisationalUnitAsset);
+
+                }else {
+                    throw new BadRequestException("An asset cannot have a negative quantity");
+
+                }
+
 
             }
 
@@ -121,6 +132,10 @@ public class AssetService {
      * @param assetObject Details of asset to be added
      */
     public OrganisationalUnitAsset addOrganisationalUnitAsset(OrganisationalUnitAssetDto assetObject) {
+
+        if(assetObject.getQuantity() < 0){
+            throw new BadRequestException("An asset cannot have a negative quantity");
+        }
 
         Optional<Asset> optionalAsset = getAssetFromDatabase(assetObject);
         Optional<OrganisationalUnit> optionalOrganisationalUnit = getOrganisationalUnitFromDatabase(assetObject);

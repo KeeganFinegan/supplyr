@@ -10,12 +10,18 @@
 .orders-container {
     position: absolute;
     height: 70vh;
-    width: 300 w;
+    width: 300vw;
     background-color: var(--color-primary);
     z-index: 1;
     overflow-y: auto;
     border-radius: 5px;
     box-shadow: 5px 5px 13px black;
+}
+
+.table-container {
+    height: auto;
+    max-width: 200vw;
+    background-color: transparent;
 }
 
 .icon {

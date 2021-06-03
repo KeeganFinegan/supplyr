@@ -4,8 +4,10 @@ import com.supplyr.supplyr.domain.Asset;
 import com.supplyr.supplyr.domain.Offer;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.Trade;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.TradeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,7 +24,7 @@ public class TradeService {
 
     private final AssetService assetService;
 
-
+    @Autowired
     public TradeService(TradeRepository tradeRepository, OrganisationalUnitService organisationalUnitService, AssetService assetService) {
         this.tradeRepository = tradeRepository;
         this.organisationalUnitService = organisationalUnitService;
@@ -35,7 +37,11 @@ public class TradeService {
      * @param offerToBeTraded    Offer involved in the trade
      * @param quantityToBeTraded quantity of that offer that is being traded
      */
-    public void addTrade(Offer offerToBeTraded, double quantityToBeTraded) {
+    public Trade addTrade(Offer offerToBeTraded, double quantityToBeTraded) {
+
+        if (quantityToBeTraded < 0 || offerToBeTraded.getQuantity() < 0){
+            throw new BadRequestException("A trade cannot have a negative quantity");
+        }
         Trade trade = new Trade();
         trade.setAsset(offerToBeTraded.getAsset());
         trade.setQuantity(quantityToBeTraded);
@@ -45,7 +51,7 @@ public class TradeService {
         trade.setOrganisationalUnit(offerToBeTraded.getOrganisationalUnit());
         trade.setType(offerToBeTraded.getType());
 
-        tradeRepository.save(trade);
+        return tradeRepository.save(trade);
 
 
     }
