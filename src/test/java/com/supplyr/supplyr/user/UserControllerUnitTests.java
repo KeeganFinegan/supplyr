@@ -1,28 +1,16 @@
 package com.supplyr.supplyr.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.controller.UserController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.User;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.security.ApplicationUserRole;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,11 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -132,11 +116,11 @@ public class UserControllerUnitTests {
         userRegistered.setRoles("ROLE_USER");
 
         when(supplyrUserDetailsService
-                .registerNewUser("IT",userRequest))
+                .registerNewUser("IT", userRequest))
                 .thenReturn(userRegistered);
 
 
-        User addedUser = userController.createUser("IT",userRequest);
+        User addedUser = userController.createUser("IT", userRequest);
         assertEquals("Keegan", addedUser.getUsername());
         assertEquals("ROLE_USER", addedUser.getRoles());
 
@@ -151,17 +135,15 @@ public class UserControllerUnitTests {
 
 
         assertThrows(BadRequestException.class, () -> {
-            userController.createUser("IT",userRequest);
+            userController.createUser("IT", userRequest);
         });
 
 
     }
 
 
-
-
     @Test
-    public void addNewAdmin()  {
+    public void addNewAdmin() {
         User userRequest = new User();
         userRequest.setUsername("Keegan");
         userRequest.setPassword("password");
@@ -209,11 +191,8 @@ public class UserControllerUnitTests {
         when(supplyrUserDetailsService.updateUserPassword(any(User.class), eq("Bob"))).thenReturn(bob);
 
         assertDoesNotThrow(() -> {
-            userController.updateUserPassword(updatedUser,"Bob");
+            userController.updateUserPassword(updatedUser, "Bob");
         });
-
-
-
 
 
     }
@@ -226,7 +205,7 @@ public class UserControllerUnitTests {
 
 
         assertThrows(BadRequestException.class, () -> {
-            userController.updateUserPassword(updatedUser,"Bob");
+            userController.updateUserPassword(updatedUser, "Bob");
         });
 
     }

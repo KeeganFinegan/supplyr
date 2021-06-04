@@ -63,12 +63,13 @@ public class OfferBook {
 
     /**
      * Custom constructor to override compare method for BUY and SELL priority queues
+     *
      * @param assetId Asset Id of the Asset type to be stored in the OfferBook
      */
     public OfferBook(Long assetId) {
         this.assetId = assetId;
         this.filledOffers = Collections.synchronizedMap(new HashMap<>());
-        this.offerMap = Collections.synchronizedMap(new HashMap<>());
+        this.offerMap =Collections.synchronizedMap(new HashMap<>());
 
         this.buyOffers = new PriorityBlockingQueue<Offer>(10, new COMPARING());
 
@@ -125,13 +126,13 @@ public class OfferBook {
     public void removeExistingOffer(Long offerId) {
 
         if (offerMap.containsKey(offerId)) {
+
             if (offerMap.get(offerId).getType().equals(OfferType.BUY)) {
                 buyOffers.remove(offerMap.get(offerId));
 
 
             } else {
                 sellOffers.remove(offerMap.get(offerId));
-
 
             }
 

@@ -1,28 +1,19 @@
 package com.supplyr.supplyr.organisationalUnit;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.controller.OrganisationalUnitController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
-import com.supplyr.supplyr.exception.AlreadyExistsException;
-import com.supplyr.supplyr.exception.BadRequestException;
-import com.supplyr.supplyr.exception.ErrorDetails;
-import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.jwt.JwtConfiguration;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
@@ -67,7 +58,6 @@ public class OrganisationalUnitControllerWithSecurityTests {
     SupplyrUserDetailsService supplyrUserDetailsService;
 
 
-
     private OrganisationalUnit it;
     private OrganisationalUnit finance;
 
@@ -84,8 +74,6 @@ public class OrganisationalUnitControllerWithSecurityTests {
         finance.setName("Finance");
         finance.setCredits(300);
     }
-
-
 
 
     @Test

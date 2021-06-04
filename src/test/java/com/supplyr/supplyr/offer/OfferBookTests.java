@@ -2,21 +2,21 @@ package com.supplyr.supplyr.offer;
 
 
 import com.supplyr.supplyr.domain.*;
-import com.supplyr.supplyr.repository.OfferRepository;
-import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class OfferBookTests {
 
@@ -41,8 +41,6 @@ public class OfferBookTests {
 
     @Mock
     TradeService tradeService;
-
-
 
 
     @BeforeEach
@@ -86,13 +84,13 @@ public class OfferBookTests {
 
 
     @AfterEach
-    public void closeStatic(){
+    public void closeStatic() {
         beanUtilityMockedStatic.close();
 
     }
 
     @Test
-    public void successfully_add_buy_offer(){
+    public void successfully_add_buy_offer() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -108,17 +106,17 @@ public class OfferBookTests {
         offerBook.addOfferHelper(buyOffer);
 
 
-        assertEquals("CPU Hours",offerBook.getBuyOffers().peek().getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getBuyOffers().peek().getType());
-        assertEquals(10,offerBook.getBuyOffers().peek().getQuantity());
-        assertEquals(5,offerBook.getBuyOffers().peek().getPrice());
-        assertEquals("IT",offerBook.getBuyOffers().peek().getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", offerBook.getBuyOffers().peek().getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getBuyOffers().peek().getType());
+        assertEquals(10, offerBook.getBuyOffers().peek().getQuantity());
+        assertEquals(5, offerBook.getBuyOffers().peek().getPrice());
+        assertEquals("IT", offerBook.getBuyOffers().peek().getOrganisationalUnit().getName());
 
 
     }
 
     @Test
-    public void successfully_add_sell_offer(){
+    public void successfully_add_sell_offer() {
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -132,17 +130,17 @@ public class OfferBookTests {
         OfferBook offerBook = new OfferBook(1L);
         offerBook.addOfferHelper(sellOffer);
 
-        assertEquals("CPU Hours",offerBook.getSellOffers().peek().getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getSellOffers().peek().getType());
-        assertEquals(10,offerBook.getSellOffers().peek().getQuantity());
-        assertEquals(5,offerBook.getSellOffers().peek().getPrice());
-        assertEquals("IT",offerBook.getSellOffers().peek().getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", offerBook.getSellOffers().peek().getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getSellOffers().peek().getType());
+        assertEquals(10, offerBook.getSellOffers().peek().getQuantity());
+        assertEquals(5, offerBook.getSellOffers().peek().getPrice());
+        assertEquals("IT", offerBook.getSellOffers().peek().getOrganisationalUnit().getName());
 
 
     }
 
     @Test
-    public void match_sell_offer_in_book(){
+    public void match_sell_offer_in_book() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -151,7 +149,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -172,7 +170,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -181,20 +179,18 @@ public class OfferBookTests {
 
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-
-
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
 
 
     }
 
     @Test
-    public void match_buy_offer_in_book(){
+    public void match_buy_offer_in_book() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -203,7 +199,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -224,7 +220,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -234,18 +230,18 @@ public class OfferBookTests {
 
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
 
 
     }
 
     @Test
-    public void fill_partial_buy_order(){
+    public void fill_partial_buy_order() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -254,7 +250,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -275,7 +271,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -285,26 +281,26 @@ public class OfferBookTests {
 
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(1L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(1L).getQuantity());
 
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(2L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(2L).getQuantity());
 
 
         // Check partial offer is still in offers queue
-        assertEquals(20,offerBook.getBuyOffers().peek().getQuantity());
-        assertEquals(OfferType.BUY,offerBook.getBuyOffers().peek().getType());
+        assertEquals(20, offerBook.getBuyOffers().peek().getQuantity());
+        assertEquals(OfferType.BUY, offerBook.getBuyOffers().peek().getType());
 
 
     }
 
     @Test
-    public void fill_partial_sell_order(){
+    public void fill_partial_sell_order() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -313,7 +309,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -334,7 +330,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -344,25 +340,25 @@ public class OfferBookTests {
 
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(1L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(1L).getQuantity());
 
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(2L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(2L).getQuantity());
 
 
         // Check partial offer is still in offers queue
-        assertEquals(20,offerBook.getSellOffers().peek().getQuantity());
-        assertEquals(OfferType.SELL,offerBook.getSellOffers().peek().getType());
+        assertEquals(20, offerBook.getSellOffers().peek().getQuantity());
+        assertEquals(OfferType.SELL, offerBook.getSellOffers().peek().getType());
 
     }
 
     @Test
-    public void dont_match_orders_from_same_unit(){
+    public void dont_match_orders_from_same_unit() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -371,7 +367,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(it);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -392,7 +388,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("IT")).thenReturn(it);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -400,24 +396,23 @@ public class OfferBookTests {
         offerBook.addOfferHelper(buyOffer);
         offerBook.addOfferHelper(sellOffer);
 
-        assertEquals("CPU Hours",offerBook.getSellOffers().peek().getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getSellOffers().peek().getType());
-        assertEquals(10,offerBook.getSellOffers().peek().getQuantity());
-        assertEquals(5,offerBook.getSellOffers().peek().getPrice());
-        assertEquals("IT",offerBook.getSellOffers().peek().getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", offerBook.getSellOffers().peek().getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getSellOffers().peek().getType());
+        assertEquals(10, offerBook.getSellOffers().peek().getQuantity());
+        assertEquals(5, offerBook.getSellOffers().peek().getPrice());
+        assertEquals("IT", offerBook.getSellOffers().peek().getOrganisationalUnit().getName());
 
-        assertEquals("CPU Hours",offerBook.getBuyOffers().peek().getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getBuyOffers().peek().getType());
-        assertEquals(10,offerBook.getBuyOffers().peek().getQuantity());
-        assertEquals(5,offerBook.getBuyOffers().peek().getPrice());
-        assertEquals("IT",offerBook.getBuyOffers().peek().getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", offerBook.getBuyOffers().peek().getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getBuyOffers().peek().getType());
+        assertEquals(10, offerBook.getBuyOffers().peek().getQuantity());
+        assertEquals(5, offerBook.getBuyOffers().peek().getPrice());
+        assertEquals("IT", offerBook.getBuyOffers().peek().getOrganisationalUnit().getName());
 
     }
 
 
-
     @Test
-    public void match_orders_with_lower_sell_price(){
+    public void match_orders_with_lower_sell_price() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -426,7 +421,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -447,7 +442,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -457,21 +452,20 @@ public class OfferBookTests {
 
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(1L).getPrice());
-
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(1L).getPrice());
 
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(2L).getPrice());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(2L).getPrice());
 
     }
 
     @Test
-    public void complete_partially_filled_sell_order(){
+    public void complete_partially_filled_sell_order() {
 
         Offer buyOffer = new Offer();
         buyOffer.setType(OfferType.BUY);
@@ -480,7 +474,7 @@ public class OfferBookTests {
         buyOffer.setId(1L);
         buyOffer.setOrganisationalUnit(finance);
         buyOffer.setAsset(cpuHours);
-        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY,4,10,1));
+        buyOffer.setTimestamp(LocalDateTime.of(2021, Month.JANUARY, 4, 10, 1));
 
         Offer sellOffer = new Offer();
         sellOffer.setType(OfferType.SELL);
@@ -510,7 +504,7 @@ public class OfferBookTests {
         financeCpuHours.setAsset(cpuHours);
         financeCpuHours.setOrganisationalUnit(it);
 
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours)).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours)).thenReturn(itCpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName("Finance")).thenReturn(finance);
 
         OfferBook offerBook = new OfferBook(1L);
@@ -519,31 +513,30 @@ public class OfferBookTests {
         offerBook.addOfferHelper(sellOffer);
 
         // Check buy offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(1L).getAsset().getName());
-        assertEquals(OfferType.BUY,offerBook.getFilledOffers().get(1L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(1L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(1L).getAsset().getName());
+        assertEquals(OfferType.BUY, offerBook.getFilledOffers().get(1L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(1L).getQuantity());
 
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-        assertEquals(10,offerBook.getFilledOffers().get(2L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
+        assertEquals(10, offerBook.getFilledOffers().get(2L).getQuantity());
 
 
         // Check partial offer is still in offers queue
-        assertEquals(20,offerBook.getSellOffers().peek().getQuantity());
-        assertEquals(OfferType.SELL,offerBook.getSellOffers().peek().getType());
+        assertEquals(20, offerBook.getSellOffers().peek().getQuantity());
+        assertEquals(OfferType.SELL, offerBook.getSellOffers().peek().getType());
 
         // Add buy offer to fill partially filled sell offer
         offerBook.addOfferHelper(buyOffer2);
 
         // Check sell offer is filled correctly
-        assertEquals("CPU Hours",offerBook.getFilledOffers().get(2L).getAsset().getName());
-        assertEquals(OfferType.SELL,offerBook.getFilledOffers().get(2L).getType());
-        assertEquals(20,offerBook.getFilledOffers().get(2L).getQuantity());
+        assertEquals("CPU Hours", offerBook.getFilledOffers().get(2L).getAsset().getName());
+        assertEquals(OfferType.SELL, offerBook.getFilledOffers().get(2L).getType());
+        assertEquals(20, offerBook.getFilledOffers().get(2L).getQuantity());
 
     }
-
 
 
 }

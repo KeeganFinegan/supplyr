@@ -3,17 +3,14 @@ package com.supplyr.supplyr.offer;
 import com.supplyr.supplyr.domain.*;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.UnauthorizedException;
-import com.supplyr.supplyr.repository.*;
+import com.supplyr.supplyr.repository.OfferRepository;
+import com.supplyr.supplyr.repository.UserRepository;
 import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +97,7 @@ public class OfferServiceTests {
     }
 
     @AfterEach
-    public void closeStatic(){
+    public void closeStatic() {
         beanUtilityMockedStatic.close();
 
     }
@@ -128,7 +125,7 @@ public class OfferServiceTests {
 
         when(assetService.getAssetByName(any())).thenReturn(cpuHours);
         when(organisationalUnitService.getOrganisationalUnitByName(any())).thenReturn(it);
-        when(organisationalUnitAssetService.getOrganisationalUnitAsset(any(),any())).thenReturn(itCpuHours);
+        when(organisationalUnitAssetService.getOrganisationalUnitAsset(any(), any())).thenReturn(itCpuHours);
         when(userRepository.findByUsername(any())).thenReturn(Optional.of(user));
         when(securityContextService.getCurrentUser()).thenReturn(user.getUsername());
         when(offerRepository.save(any())).thenReturn(offer);
@@ -343,7 +340,6 @@ public class OfferServiceTests {
         });
 
 
-
     }
 
     @Test
@@ -445,13 +441,11 @@ public class OfferServiceTests {
 
         List<Double> lowestAskHighestBid = offerService.getLowestAskAndHighestBid("CPU Hours");
 
-        assertEquals(19,lowestAskHighestBid.get(0));
-        assertEquals(20,lowestAskHighestBid.get(1));
+        assertEquals(19, lowestAskHighestBid.get(0));
+        assertEquals(20, lowestAskHighestBid.get(1));
 
 
     }
-
-
 
 
 }

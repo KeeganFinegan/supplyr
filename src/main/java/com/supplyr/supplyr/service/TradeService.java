@@ -38,11 +38,10 @@ public class TradeService {
      * @param offerToBeTraded    Offer involved in the trade
      * @param quantityToBeTraded quantity of that offer that is being traded
      * @throws BadRequestException If the trade has a negative quantity
-     *
      */
     public Trade addTrade(Offer offerToBeTraded, double quantityToBeTraded) {
 
-        if (quantityToBeTraded < 0 || offerToBeTraded.getQuantity() < 0){
+        if (quantityToBeTraded < 0 || offerToBeTraded.getQuantity() < 0) {
             throw new BadRequestException("A trade cannot have a negative quantity");
         }
         Trade trade = new Trade();
@@ -58,6 +57,7 @@ public class TradeService {
 
 
     }
+
     /**
      * Get a list of trades for an Organisational Unit
      *

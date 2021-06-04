@@ -25,7 +25,7 @@ public class OrganisationalUnitAssetService {
      * Get an OrganisationalUnitAsset object from the database
      *
      * @param organisationalUnit Organisational Unit to be retrieved
-     * @param asset Asset to be retrieved
+     * @param asset              Asset to be retrieved
      * @return OrganisationalUnitAsset
      * @throws NotFoundException when the OrganisationalUnitAsset does not exist
      */

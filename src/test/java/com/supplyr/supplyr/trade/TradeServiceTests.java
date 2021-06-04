@@ -13,14 +13,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class TradeServiceTests {
 
@@ -40,7 +41,7 @@ public class TradeServiceTests {
     private Asset cpuHours;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.openMocks(this);
 
         it = new OrganisationalUnit();
@@ -56,7 +57,7 @@ public class TradeServiceTests {
 
 
     @Test
-    public void addTradeSuccess(){
+    public void addTradeSuccess() {
         Offer offerToBeTraded = new Offer();
         offerToBeTraded.setAsset(cpuHours);
         offerToBeTraded.setOrganisationalUnit(it);
@@ -75,11 +76,11 @@ public class TradeServiceTests {
 
         when(tradeRepository.save(any())).thenReturn(trade);
 
-        Trade returnedTrade = tradeService.addTrade(offerToBeTraded,10);
+        Trade returnedTrade = tradeService.addTrade(offerToBeTraded, 10);
 
-        assertEquals(5,returnedTrade.getPrice());
-        assertEquals(5,returnedTrade.getQuantity());
-        assertEquals("CPU Hours",returnedTrade.getAsset().getName());
+        assertEquals(5, returnedTrade.getPrice());
+        assertEquals(5, returnedTrade.getQuantity());
+        assertEquals("CPU Hours", returnedTrade.getAsset().getName());
 
     }
 
@@ -95,7 +96,7 @@ public class TradeServiceTests {
 
 
         assertThrows(BadRequestException.class, () -> {
-            tradeService.addTrade(offerToBeTraded,-10);
+            tradeService.addTrade(offerToBeTraded, -10);
         });
 
     }
@@ -131,7 +132,7 @@ public class TradeServiceTests {
 
         List<Trade> retrievedTradeList = tradeService.getTradesByUnit("IT");
 
-        assertEquals("RAM Hours",retrievedTradeList.get(0).getAsset().getName());
+        assertEquals("RAM Hours", retrievedTradeList.get(0).getAsset().getName());
 
 
     }
@@ -145,7 +146,7 @@ public class TradeServiceTests {
                 .thenThrow(new NotFoundException("Could not find Organisational Unit IT"));
 
 
-        assertThrows(NotFoundException.class,() -> {
+        assertThrows(NotFoundException.class, () -> {
             tradeService.getTradesByUnit("IT");
         });
 
@@ -185,7 +186,7 @@ public class TradeServiceTests {
 
         List<Trade> retrievedTradeList = tradeService.getAssetTrades("CPU Hours");
 
-        assertEquals("CPU Hours",retrievedTradeList.get(0).getAsset().getName());
+        assertEquals("CPU Hours", retrievedTradeList.get(0).getAsset().getName());
 
 
     }

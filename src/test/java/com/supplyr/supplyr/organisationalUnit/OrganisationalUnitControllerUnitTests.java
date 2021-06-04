@@ -1,11 +1,9 @@
 package com.supplyr.supplyr.organisationalUnit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supplyr.supplyr.controller.OrganisationalUnitController;
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
-import com.supplyr.supplyr.exception.ErrorDetails;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,18 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class OrganisationalUnitControllerUnitTests {
@@ -47,7 +30,7 @@ public class OrganisationalUnitControllerUnitTests {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    private  OrganisationalUnitController organisationalUnitController;
+    private OrganisationalUnitController organisationalUnitController;
     private OrganisationalUnit it;
     private OrganisationalUnit finance;
 
@@ -66,8 +49,6 @@ public class OrganisationalUnitControllerUnitTests {
         finance.setName("Finance");
         finance.setCredits(300);
     }
-
-
 
 
     @Test
@@ -160,9 +141,9 @@ public class OrganisationalUnitControllerUnitTests {
         when(organisationalUnitService.getOrganisationalUnitByName("Management"))
                 .thenThrow(new NotFoundException("Could not find Organisational Unit Management"));
 
-       assertThrows(NotFoundException.class, () -> {
-           organisationalUnitController.getOrganisationalUnitByName("Management");
-       });
+        assertThrows(NotFoundException.class, () -> {
+            organisationalUnitController.getOrganisationalUnitByName("Management");
+        });
 
     }
 }

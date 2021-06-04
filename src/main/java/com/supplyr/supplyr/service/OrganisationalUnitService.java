@@ -48,14 +48,14 @@ public class OrganisationalUnitService {
      */
     public OrganisationalUnit getOrganisationalUnitByName(String organisationalUnitName) {
 
-            Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
-                    .findByUnitName(organisationalUnitName);
+        Optional<OrganisationalUnit> optionalOrganisationalUnit = organisationalUnitRepository
+                .findByUnitName(organisationalUnitName);
 
-            if (optionalOrganisationalUnit.isPresent()) {
-                return optionalOrganisationalUnit.get();
-            } else {
-                throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
-            }
+        if (optionalOrganisationalUnit.isPresent()) {
+            return optionalOrganisationalUnit.get();
+        } else {
+            throw new NotFoundException("Could not find Organisational Unit " + organisationalUnitName);
+        }
 
     }
 
@@ -65,8 +65,13 @@ public class OrganisationalUnitService {
      * @param organisationalUnit Organisational Unit to be inserted
      * @return Organisational Unit that was inserted
      * @throws AlreadyExistsException If the OrganisationalUnit already exists
+     * @throws BadRequestException    If credits are less than 0
      */
     public OrganisationalUnit createOrganisationalUnit(OrganisationalUnit organisationalUnit) {
+
+        if (organisationalUnit.getCredits() < 0) {
+            throw new BadRequestException("A unit cannot have negative credits");
+        }
 
         Optional<OrganisationalUnit> optUnit = organisationalUnitRepository
                 .findByUnitName(organisationalUnit.getName());
@@ -85,16 +90,16 @@ public class OrganisationalUnitService {
      * Update the credit balance of an OrganisationalUnit
      *
      * @param organisationalUnitId ID of Organisational Unit to be updated
-     * @param creditAmount amount of credits to add to unit (can be negative)
+     * @param creditAmount         amount of credits to add to unit (can be negative)
      * @throws BadRequestException If the new credit amount will be less than 0
-     * @throws NotFoundException If the Organisational Unit does not exist
+     * @throws NotFoundException   If the Organisational Unit does not exist
      */
     public void updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
         organisationalUnitRepository
                 .findById(organisationalUnitId).map(organisationalUnit -> {
-                    if ((organisationalUnit.getCredits() + creditAmount) < 0){
-                        throw new BadRequestException("A unit cannot have negative credits");
-                    }
+            if ((organisationalUnit.getCredits() + creditAmount) < 0) {
+                throw new BadRequestException("A unit cannot have negative credits");
+            }
             organisationalUnit.setCredits(organisationalUnit.getCredits() + creditAmount);
             return organisationalUnit;
         }).orElseThrow(() -> new NotFoundException(String.format("Could not find Organisational Unit with id %d "

@@ -1,15 +1,16 @@
 package com.supplyr.supplyr.asset;
 
-import com.supplyr.supplyr.domain.*;
+import com.supplyr.supplyr.domain.Asset;
+import com.supplyr.supplyr.domain.OrganisationalUnit;
+import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
+import com.supplyr.supplyr.domain.OrganisationalUnitAssetDto;
 import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.exception.NotFoundException;
-import com.supplyr.supplyr.exception.UnauthorizedException;
 import com.supplyr.supplyr.repository.AssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
 import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.service.AssetService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,7 +42,7 @@ public class AssetServiceTests {
 
 
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.openMocks(this);
 
         it = new OrganisationalUnit();
@@ -57,7 +58,7 @@ public class AssetServiceTests {
     }
 
     @Test
-    public void get_asset_by_name_success(){
+    public void get_asset_by_name_success() {
         cpuHours.setAssetId(1L);
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(java.util.Optional.ofNullable(cpuHours));
 
@@ -70,7 +71,7 @@ public class AssetServiceTests {
     }
 
     @Test
-    public void get_asset_by_name_non_existent(){
+    public void get_asset_by_name_non_existent() {
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(Optional.empty());
 
 
@@ -79,25 +80,23 @@ public class AssetServiceTests {
         });
 
 
-
     }
 
     @Test
-    public void add_asset_type_success(){
+    public void add_asset_type_success() {
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(Optional.empty());
         when(assetRepository.save(cpuHours)).thenReturn(cpuHours);
 
         Asset asset = assetService.addAssetType(cpuHours);
 
-        assertEquals("CPU Hours",asset.getName());
-        assertEquals(1L,asset.getAssetId());
-
+        assertEquals("CPU Hours", asset.getName());
+        assertEquals(1L, asset.getAssetId());
 
 
     }
 
     @Test
-    public void add_asset_type_already_exists(){
+    public void add_asset_type_already_exists() {
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(Optional.of(cpuHours));
         when(assetRepository.save(cpuHours)).thenReturn(cpuHours);
 
@@ -106,14 +105,10 @@ public class AssetServiceTests {
         });
 
 
-
-
-
-
     }
 
     @Test
-    public void update_unit_asset_success(){
+    public void update_unit_asset_success() {
 
         OrganisationalUnitAsset itCpuHours = new OrganisationalUnitAsset();
         itCpuHours.setOrganisationalUnit(it);
@@ -136,7 +131,7 @@ public class AssetServiceTests {
         when(assetRepository.findById(1L)).thenReturn(Optional.of(cpuHours));
         when(organisationalUnitRepository.findByUnitName("IT")).thenReturn(Optional.of(it));
         when(organisationalUnitRepository.findById((1L))).thenReturn(Optional.of(it));
-        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it,cpuHours)).thenReturn(Optional.of(itCpuHours));
+        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it, cpuHours)).thenReturn(Optional.of(itCpuHours));
         when(organisationalUnitAssetRepository.save(updatedItCpuHours)).thenReturn(updatedItCpuHours);
 
 
@@ -148,7 +143,7 @@ public class AssetServiceTests {
     }
 
     @Test
-    public void update_unit_asset_negative_quantity(){
+    public void update_unit_asset_negative_quantity() {
 
         OrganisationalUnitAsset itCpuHours = new OrganisationalUnitAsset();
         itCpuHours.setOrganisationalUnit(it);
@@ -171,19 +166,19 @@ public class AssetServiceTests {
         when(assetRepository.findById(1L)).thenReturn(Optional.of(cpuHours));
         when(organisationalUnitRepository.findByUnitName("IT")).thenReturn(Optional.of(it));
         when(organisationalUnitRepository.findById((1L))).thenReturn(Optional.of(it));
-        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it,cpuHours)).thenReturn(Optional.of(itCpuHours));
+        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it, cpuHours)).thenReturn(Optional.of(itCpuHours));
         when(organisationalUnitAssetRepository.save(updatedItCpuHours)).thenReturn(updatedItCpuHours);
 
 
         assertThrows(BadRequestException.class, () -> {
             assetService.updateOrganisationalUnitAsset(updateRequest);
-        },"An asset cannot have a negative quantity");
+        }, "An asset cannot have a negative quantity");
 
 
     }
 
     @Test
-    public void add_organisational_unit_asset(){
+    public void add_organisational_unit_asset() {
 
         OrganisationalUnitAsset itCpuHours = new OrganisationalUnitAsset();
         itCpuHours.setOrganisationalUnit(it);
@@ -199,20 +194,20 @@ public class AssetServiceTests {
         when(organisationalUnitRepository.findById((1L))).thenReturn(Optional.of(it));
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(Optional.of(cpuHours));
         when(assetRepository.findById(1L)).thenReturn(Optional.of(cpuHours));
-        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it,cpuHours)).thenReturn(Optional.of(itCpuHours));
+        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it, cpuHours)).thenReturn(Optional.of(itCpuHours));
         when(organisationalUnitAssetRepository.save(any())).thenReturn(itCpuHours);
 
         OrganisationalUnitAsset organisationalUnitAsset = assetService.addOrganisationalUnitAsset(assetRequest);
 
-        assertEquals("CPU Hours",organisationalUnitAsset.getAsset().getName());
-        assertEquals(10,organisationalUnitAsset.getQuantity());
-        assertEquals("IT",organisationalUnitAsset.getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", organisationalUnitAsset.getAsset().getName());
+        assertEquals(10, organisationalUnitAsset.getQuantity());
+        assertEquals("IT", organisationalUnitAsset.getOrganisationalUnit().getName());
 
 
     }
 
     @Test
-    public void add_organisational_unit_asset_negative_credits(){
+    public void add_organisational_unit_asset_negative_credits() {
 
         OrganisationalUnitAsset itCpuHours = new OrganisationalUnitAsset();
         itCpuHours.setOrganisationalUnit(it);
@@ -228,20 +223,16 @@ public class AssetServiceTests {
         when(organisationalUnitRepository.findById((1L))).thenReturn(Optional.of(it));
         when(assetRepository.findByName(cpuHours.getName())).thenReturn(Optional.of(cpuHours));
         when(assetRepository.findById(1L)).thenReturn(Optional.of(cpuHours));
-        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it,cpuHours)).thenReturn(Optional.of(itCpuHours));
+        when(organisationalUnitAssetRepository.findByOrganisationalUnitAndAsset(it, cpuHours)).thenReturn(Optional.of(itCpuHours));
         when(organisationalUnitAssetRepository.save(any())).thenReturn(itCpuHours);
 
 
         assertThrows(BadRequestException.class, () -> {
             assetService.addOrganisationalUnitAsset(assetRequest);
-        },"An asset cannot have a negative quantity");
+        }, "An asset cannot have a negative quantity");
 
 
     }
-
-
-
-
 
 
 }

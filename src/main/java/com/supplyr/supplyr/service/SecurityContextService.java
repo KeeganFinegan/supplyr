@@ -1,6 +1,5 @@
 package com.supplyr.supplyr.service;
 
-import com.supplyr.supplyr.exception.NotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

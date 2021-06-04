@@ -55,7 +55,7 @@ public class SupplyrUserDetailsService implements UserDetailsService {
      * @param user               User to be registered
      * @return User that was registered
      * @throws AlreadyExistsException If the user already exists
-     * @throws NotFoundException If the Organisational Unit doesn't exist
+     * @throws NotFoundException      If the Organisational Unit doesn't exist
      */
     public User registerNewUser(String organisationalUnit, User user) {
         Optional<OrganisationalUnit> optUnit = organisationalUnitRepository.findByUnitName(organisationalUnit);
@@ -82,7 +82,7 @@ public class SupplyrUserDetailsService implements UserDetailsService {
      * @param user User to be registered
      * @return User that was registered
      * @throws AlreadyExistsException When admin already exists
-     * @throws NotFoundException When Supplyr Admin unit does not exist
+     * @throws NotFoundException      When Supplyr Admin unit does not exist
      */
     public User registerNewAdmin(User user) {
 

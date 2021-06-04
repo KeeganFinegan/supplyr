@@ -20,9 +20,9 @@ public class OfferController {
 
     /**
      * REST endpoint to add a new SELL offer
-     * 
+     *
      * @param offerRequest details of SELL offer to be added
-     * @return Sell offer added to the database                    
+     * @return Sell offer added to the database
      */
     @PostMapping("/sell")
     public Offer addSellOffer(@RequestBody OfferRequest offerRequest) {
@@ -35,7 +35,7 @@ public class OfferController {
      * REST endpoint to add a new SELL offer
      *
      * @param offerRequest details of BUY offer to be added
-     * @return Buy offer added to the database                    
+     * @return Buy offer added to the database
      */
     @PostMapping("/buy")
     public Offer addBuyOffer(@RequestBody OfferRequest offerRequest) {
@@ -48,7 +48,6 @@ public class OfferController {
      * REST endpoint to delete an offer by id
      *
      * @param offerId Id of offer to be deleted
-     *
      */
     @PostMapping("/delete/{offerId}")
     public void deleteOffer(@PathVariable Long offerId) {

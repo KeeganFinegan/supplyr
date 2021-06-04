@@ -2,6 +2,7 @@ package com.supplyr.supplyr.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "offer")
@@ -47,6 +48,20 @@ public class Offer implements Cloneable {
         this.type = type;
         this.price = price;
         this.timestamp = timestamp;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return id.equals(offer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public Long getId() {

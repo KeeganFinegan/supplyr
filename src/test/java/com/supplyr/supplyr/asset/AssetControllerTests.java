@@ -213,8 +213,8 @@ public class AssetControllerTests {
         String responseAsString = result.getResponse().getContentAsString();
         Trade[] objectResponse = objectMapper.readValue(responseAsString, Trade[].class);
 
-        assertEquals("CPU Hours",objectResponse[0].getAsset().getName());
-        assertEquals(10,objectResponse[0].getPrice());
+        assertEquals("CPU Hours", objectResponse[0].getAsset().getName());
+        assertEquals(10, objectResponse[0].getPrice());
     }
 
     @Test
@@ -233,8 +233,8 @@ public class AssetControllerTests {
         String responseAsString = result.getResponse().getContentAsString();
         LowestAskHighestBidDto objectResponse = objectMapper.readValue(responseAsString, LowestAskHighestBidDto.class);
 
-        assertEquals(19.0,objectResponse.getLowestAsk());
-        assertEquals(20.5,objectResponse.getHighestBid());
+        assertEquals(19.0, objectResponse.getLowestAsk());
+        assertEquals(20.5, objectResponse.getHighestBid());
 
     }
 

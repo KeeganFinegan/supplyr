@@ -88,15 +88,15 @@ public class OfferService {
 
                 double offerAssetQuantity = offerRequest.getQuantity();
 
-                    OrganisationalUnitAsset offerOrganisationalUnitAsset = organisationalUnitAssetService
-                            .getOrganisationalUnitAsset(offerOrganisationalUnit,offerAsset);
+                OrganisationalUnitAsset offerOrganisationalUnitAsset = organisationalUnitAssetService
+                        .getOrganisationalUnitAsset(offerOrganisationalUnit, offerAsset);
 
-                    if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
+                if (hasSufficientAssets(offerOrganisationalUnitAsset, offerAssetQuantity)) {
 
-                        return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
-                    }
-                    throw new BadRequestException(String.format("Not enough %s to complete the offer request",
-                           offerRequest.getAsset()));
+                    return saveOffer(offerRequest, offerOrganisationalUnit, offerAsset, OfferType.SELL);
+                }
+                throw new BadRequestException(String.format("Not enough %s to complete the offer request",
+                        offerRequest.getAsset()));
 
             }
             throw new NotFoundException("Organisational Unit or Asset Type does not exist");
@@ -293,9 +293,19 @@ public class OfferService {
 
             Optional<Offer> optionalOffer = offerRepository.findById(offerToBeDeleted);
             if (optionalOffer.isPresent()) {
-                HashMap<Long, OfferBook> currentOfferBooks = getOfferBooks();
-                OfferBook offerBook = getOfferBook(optionalOffer.get(), currentOfferBooks);
+
+                HashMap<Long, OfferBook> currentOrderBook = getOfferBooks();
+
+                OfferBook offerBook = currentOrderBook.get(optionalOffer.get().getAsset().getAssetId());
+                Offer offer = optionalOffer.get();
+                if (offer.getType().equals(OfferType.BUY)) {
+                    offerBook.getBuyOffers().remove(offer);
+                } else {
+                    offerBook.getSellOffers().remove(offer);
+                }
+                offerBook.getBuyOffers().remove(optionalOffer.get());
                 offerBook.removeExistingOffer(offerToBeDeleted);
+
                 offerRepository.deleteById(offerToBeDeleted);
 
             }
@@ -306,12 +316,14 @@ public class OfferService {
 
     }
 
+
     private boolean isValidOffer(OfferRequest offerRequest) {
         return !(offerRequest.getPrice() < 1) && !(offerRequest.getQuantity() < 1);
 
     }
 
     // Get the current lowest ask
+
     /**
      * Return the current lowest ask and highest bid for a particular Asset
      *

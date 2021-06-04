@@ -12,15 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 
 public class OrganisationalUnitServiceTests {
@@ -35,7 +32,7 @@ public class OrganisationalUnitServiceTests {
     private OrganisationalUnit finance;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.openMocks(this);
 
         it = new OrganisationalUnit();
@@ -51,7 +48,7 @@ public class OrganisationalUnitServiceTests {
     }
 
     @Test
-    public void get_organisational_units(){
+    public void get_organisational_units() {
         OrganisationalUnit admin = new OrganisationalUnit();
         admin.setName("Supplyr Admin");
         List<OrganisationalUnit> organisationalUnits = new ArrayList<>();
@@ -62,36 +59,36 @@ public class OrganisationalUnitServiceTests {
         when(organisationalUnitRepository.findAll()).thenReturn(organisationalUnits);
         List<OrganisationalUnit> units = organisationalUnitService.getOrganisationalUnits();
 
-        assertEquals(units.get(0).getName(),"IT");
+        assertEquals(units.get(0).getName(), "IT");
 
 
     }
 
 
     @Test
-    public void get_organisational_unit_by_name_success(){
+    public void get_organisational_unit_by_name_success() {
 
         when(organisationalUnitRepository.findByUnitName("IT")).thenReturn(Optional.of(it));
-      OrganisationalUnit organisationalUnit = organisationalUnitService.getOrganisationalUnitByName("IT");
-        assertEquals(organisationalUnit.getName(),"IT");
+        OrganisationalUnit organisationalUnit = organisationalUnitService.getOrganisationalUnitByName("IT");
+        assertEquals(organisationalUnit.getName(), "IT");
 
 
     }
 
     @Test
-    public void get_organisational_unit_by_name_non_existent(){
+    public void get_organisational_unit_by_name_non_existent() {
 
         when(organisationalUnitRepository.findByUnitName("NON EXISTENT")).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,() -> {
+        assertThrows(NotFoundException.class, () -> {
             organisationalUnitService.getOrganisationalUnitByName("NON EXISTENT");
 
-        },"Could not find Organisational Unit NON EXISTENT");
+        }, "Could not find Organisational Unit NON EXISTENT");
 
     }
 
     @Test
-    public void create_organisational_unit_success(){
+    public void create_organisational_unit_success() {
 
         OrganisationalUnit request = new OrganisationalUnit();
         request.setName("IT");
@@ -101,14 +98,14 @@ public class OrganisationalUnitServiceTests {
         when(organisationalUnitRepository.save(request)).thenReturn(it);
         OrganisationalUnit organisationalUnit = organisationalUnitService.createOrganisationalUnit(request);
 
-        assertEquals(organisationalUnit.getName(),"IT");
-        assertEquals(organisationalUnit.getCredits(),10);
+        assertEquals(organisationalUnit.getName(), "IT");
+        assertEquals(organisationalUnit.getCredits(), 10);
 
 
     }
 
     @Test
-    public void create_organisational_unit_already_exists(){
+    public void create_organisational_unit_already_exists() {
 
         OrganisationalUnit request = new OrganisationalUnit();
         request.setName("IT");
@@ -118,13 +115,29 @@ public class OrganisationalUnitServiceTests {
 
         assertThrows(AlreadyExistsException.class, () -> {
             organisationalUnitService.createOrganisationalUnit(request);
-        },"Organisational Unit IT already exists");
+        }, "Organisational Unit IT already exists");
 
 
     }
 
     @Test
-    public void create_organisational_unit_credits_success(){
+    public void create_organisational_unit_negative_credits() {
+
+        OrganisationalUnit request = new OrganisationalUnit();
+        request.setName("IT");
+        request.setCredits(-10);
+
+        when(organisationalUnitRepository.findByUnitName(request.getName())).thenReturn(Optional.of(it));
+
+        assertThrows(BadRequestException.class, () -> {
+            organisationalUnitService.createOrganisationalUnit(request);
+        }, "A unit cannot have negative credits");
+
+
+    }
+
+    @Test
+    public void create_organisational_unit_credits_success() {
 
         OrganisationalUnit request = new OrganisationalUnit();
         request.setName("IT");
@@ -133,12 +146,12 @@ public class OrganisationalUnitServiceTests {
         when(organisationalUnitRepository.findById(1L)).thenReturn(Optional.of(it));
 
         assertDoesNotThrow(() -> {
-            organisationalUnitService.updateOrganisationalUnitCredits(1L,20);
+            organisationalUnitService.updateOrganisationalUnitCredits(1L, 20);
         });
     }
 
     @Test
-    public void create_organisational_unit_credits_negative_credits(){
+    public void create_organisational_unit_credits_negative_credits() {
 
         OrganisationalUnit request = new OrganisationalUnit();
         request.setName("IT");
@@ -146,14 +159,11 @@ public class OrganisationalUnitServiceTests {
 
         when(organisationalUnitRepository.findById(1L)).thenReturn(Optional.of(it));
 
-        assertThrows(BadRequestException.class,() -> {
+        assertThrows(BadRequestException.class, () -> {
             organisationalUnitService.updateOrganisationalUnitCredits(1L, -100);
-        },"A unit cannot have negative credits");
+        }, "A unit cannot have negative credits");
 
     }
-
-
-
 
 
 }

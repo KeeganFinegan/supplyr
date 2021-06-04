@@ -6,7 +6,6 @@ import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.OrganisationalUnitAsset;
 import com.supplyr.supplyr.exception.NotFoundException;
 import com.supplyr.supplyr.repository.OrganisationalUnitAssetRepository;
-import com.supplyr.supplyr.repository.OrganisationalUnitRepository;
 import com.supplyr.supplyr.service.OrganisationalUnitAssetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,10 +15,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class OrganisationalUnitAssetServiceTests {
@@ -31,13 +28,13 @@ public class OrganisationalUnitAssetServiceTests {
     OrganisationalUnitAssetRepository organisationalUnitAssetRepository;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         MockitoAnnotations.openMocks(this);
 
     }
 
     @Test
-    public void getOrganisationalUnitAssetSuccess(){
+    public void getOrganisationalUnitAssetSuccess() {
 
         Asset cpuHours = new Asset();
         cpuHours.setAssetId(1L);
@@ -54,18 +51,18 @@ public class OrganisationalUnitAssetServiceTests {
         itCpuHours.setOrganisationalUnit(it);
 
         when(organisationalUnitAssetRepository
-                .findByOrganisationalUnitAndAsset(it,cpuHours)).thenReturn(Optional.of(itCpuHours));
+                .findByOrganisationalUnitAndAsset(it, cpuHours)).thenReturn(Optional.of(itCpuHours));
 
         OrganisationalUnitAsset returnedUnitAsset = organisationalUnitAssetService
-                .getOrganisationalUnitAsset(it,cpuHours);
+                .getOrganisationalUnitAsset(it, cpuHours);
 
-        assertEquals("CPU Hours",returnedUnitAsset.getAsset().getName());
-        assertEquals("IT",returnedUnitAsset.getOrganisationalUnit().getName());
+        assertEquals("CPU Hours", returnedUnitAsset.getAsset().getName());
+        assertEquals("IT", returnedUnitAsset.getOrganisationalUnit().getName());
 
     }
 
     @Test
-    public void getOrganisationalUnitAssetNonExistent(){
+    public void getOrganisationalUnitAssetNonExistent() {
 
         Asset cpuHours = new Asset();
         cpuHours.setAssetId(1L);
@@ -77,19 +74,15 @@ public class OrganisationalUnitAssetServiceTests {
 
 
         when(organisationalUnitAssetRepository
-                .findByOrganisationalUnitAndAsset(it,cpuHours))
+                .findByOrganisationalUnitAndAsset(it, cpuHours))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,() -> {
-            organisationalUnitAssetService.getOrganisationalUnitAsset(it,cpuHours);
+        assertThrows(NotFoundException.class, () -> {
+            organisationalUnitAssetService.getOrganisationalUnitAsset(it, cpuHours);
         });
 
 
     }
-
-
-
-
 
 
 }

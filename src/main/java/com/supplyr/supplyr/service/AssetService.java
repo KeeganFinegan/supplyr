@@ -106,12 +106,11 @@ public class AssetService {
                 OrganisationalUnitAsset organisationalUnitAsset = optionalOrganisationalUnitAsset.get();
 
 
-
                 organisationalUnitAsset.setQuantity(newQuantity);
-                if (!(organisationalUnitAsset.getQuantity() < 0)){
+                if (!(organisationalUnitAsset.getQuantity() < 0)) {
                     organisationalUnitAssetRepository.save(organisationalUnitAsset);
 
-                }else {
+                } else {
                     throw new BadRequestException("An asset cannot have a negative quantity");
 
                 }
@@ -134,7 +133,7 @@ public class AssetService {
      */
     public OrganisationalUnitAsset addOrganisationalUnitAsset(OrganisationalUnitAssetDto assetObject) {
 
-        if(assetObject.getQuantity() < 0){
+        if (assetObject.getQuantity() < 0) {
             throw new BadRequestException("An asset cannot have a negative quantity");
         }
 

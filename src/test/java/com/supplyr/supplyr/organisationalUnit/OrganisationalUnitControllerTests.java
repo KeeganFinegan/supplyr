@@ -70,8 +70,6 @@ public class OrganisationalUnitControllerTests {
     }
 
 
-
-
     @Test
     public void createOrganisationalUnit() throws Exception {
 

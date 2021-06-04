@@ -29,6 +29,7 @@ public class AssetController {
 
     /**
      * REST endpoint to retrieve a list of all Assets
+     *
      * @return List of all Assets
      */
     @GetMapping("/assets")
