@@ -26,6 +26,7 @@ public class OrganisationalUnitService {
      * Retrieve all Organisational Units from database
      *
      * @return List of all Organisational Units
+     * @throws BadRequestException If the admin OrganisationalUnit has been deleted from database
      */
     public List<OrganisationalUnit> getOrganisationalUnits() {
         Optional<OrganisationalUnit> adminUnit = organisationalUnitRepository.findByUnitName("Supplyr Admin");
@@ -43,6 +44,7 @@ public class OrganisationalUnitService {
      *
      * @param organisationalUnitName Name of Organisational Unit to be retrieved
      * @return Queried Organisational Unit
+     * @throws NotFoundException If the OrganisationalUnit does not exist
      */
     public OrganisationalUnit getOrganisationalUnitByName(String organisationalUnitName) {
 
@@ -62,6 +64,7 @@ public class OrganisationalUnitService {
      *
      * @param organisationalUnit Organisational Unit to be inserted
      * @return Organisational Unit that was inserted
+     * @throws AlreadyExistsException If the OrganisationalUnit already exists
      */
     public OrganisationalUnit createOrganisationalUnit(OrganisationalUnit organisationalUnit) {
 
@@ -78,7 +81,14 @@ public class OrganisationalUnitService {
 
     }
 
-
+    /**
+     * Update the credit balance of an OrganisationalUnit
+     *
+     * @param organisationalUnitId ID of Organisational Unit to be updated
+     * @param creditAmount amount of credits to add to unit (can be negative)
+     * @throws BadRequestException If the new credit amount will be less than 0
+     * @throws NotFoundException If the Organisational Unit does not exist
+     */
     public void updateOrganisationalUnitCredits(Long organisationalUnitId, double creditAmount) {
         organisationalUnitRepository
                 .findById(organisationalUnitId).map(organisationalUnit -> {
@@ -96,6 +106,7 @@ public class OrganisationalUnitService {
      * Delete Organisational Unit from database
      *
      * @param organisationalUnitId Id of Organisational Unit to be deleted
+     * @throws NotFoundException When the Organisational Unit does not exist
      */
     public void deleteById(Long organisationalUnitId) {
 

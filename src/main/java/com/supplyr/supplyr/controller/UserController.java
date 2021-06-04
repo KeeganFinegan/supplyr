@@ -1,6 +1,7 @@
 package com.supplyr.supplyr.controller;
 
 import com.supplyr.supplyr.domain.User;
+import com.supplyr.supplyr.exception.BadRequestException;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,13 +45,17 @@ public class UserController {
      * REST endpoint to register a new User
      *
      * @param organisationalUnit Organisational Unit that the user is to be a member of
-     * @param user               User to be registered
+     * @param user User to be registered
      * @return User that was registered
      */
     @PostMapping("/{organisationalUnit}")
-    public User createUser(@PathVariable String organisationalUnit, @RequestBody User user) {
+    public User createUser (@PathVariable String organisationalUnit, @RequestBody User user) {
 
-        return supplyrUserDetailsService.registerNewUser(organisationalUnit, user);
+        if(user.getPassword() != null){
+            return supplyrUserDetailsService.registerNewUser(organisationalUnit, user);
+        }
+        throw new BadRequestException("You must provide a password when creating a new user");
+
 
 
     }
@@ -63,7 +68,10 @@ public class UserController {
      */
     @PostMapping("/admin")
     public User createAdmin(@RequestBody User user) {
-        return supplyrUserDetailsService.registerNewAdmin(user);
+        if(user.getPassword() != null){
+            return supplyrUserDetailsService.registerNewAdmin( user);
+        }
+        throw new BadRequestException("You must provide a password when creating a new admin");
 
     }
 
@@ -75,7 +83,10 @@ public class UserController {
      */
     @PutMapping("/{username}")
     public User updateUserPassword(@RequestBody User updatedUser, @PathVariable String username) {
-        return supplyrUserDetailsService.updateUserPassword(updatedUser, username);
+        if (updatedUser.getPassword() != null ){
+            return supplyrUserDetailsService.updateUserPassword(updatedUser, username);
+        }
+        throw new BadRequestException("You must provide a password when creating a new admin");
     }
 
 }

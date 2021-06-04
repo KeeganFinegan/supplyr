@@ -1,5 +1,6 @@
 package com.supplyr.supplyr.domain;
 
+// Object to map offer requests to
 public class OfferRequest {
     private String asset;
     private String organisationalUnit;

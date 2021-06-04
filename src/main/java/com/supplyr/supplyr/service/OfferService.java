@@ -214,7 +214,7 @@ public class OfferService {
 
 
     private boolean isValidUser(OfferRequest offerRequest) {
-        // TODO set back to original function
+
         // Get the current user from security context holder
         String currentUser = securityContextService.getCurrentUser();
         Optional<User> optionalUser = userRepository.findByUsername(currentUser);
@@ -286,6 +286,7 @@ public class OfferService {
      * Delete an Offer with a given id
      *
      * @param offerToBeDeleted Id of offer to be deleted
+     * @throws NotFoundException If offer does not exist
      */
     public void deleteOfferById(Long offerToBeDeleted) {
         if (offerRepository.existsById(offerToBeDeleted)) {
@@ -316,6 +317,7 @@ public class OfferService {
      *
      * @param asset Asset to receive information for
      * @return A list with the lowest ask at index 0 and highest bid at index 1
+     * @throws NotFoundException if there are no offers for this asset
      */
     public List<Double> getLowestAskAndHighestBid(String asset) {
 

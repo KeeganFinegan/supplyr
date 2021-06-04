@@ -37,6 +37,8 @@ public class TradeService {
      *
      * @param offerToBeTraded    Offer involved in the trade
      * @param quantityToBeTraded quantity of that offer that is being traded
+     * @throws BadRequestException If the trade has a negative quantity
+     *
      */
     public Trade addTrade(Offer offerToBeTraded, double quantityToBeTraded) {
 
@@ -56,7 +58,13 @@ public class TradeService {
 
 
     }
-
+    /**
+     * Get a list of trades for an Organisational Unit
+     *
+     * @param organisationalUnitName Name of Organisational Unit to get trades for
+     * @return a list of trades for a particular Organisational Unit
+     * @throws NotFoundException when there are no trades for that unit or the unit doesn't exist
+     */
     public List<Trade> getTradesByUnit(String organisationalUnitName) {
         try {
             OrganisationalUnit organisationalUnit = organisationalUnitService
@@ -77,6 +85,13 @@ public class TradeService {
 
     }
 
+    /**
+     * Get a list of trades trades for a particular Asset
+     *
+     * @param assetName Asset to receive trades for
+     * @return List of trades for an Asset
+     * @throws NotFoundException When there are no trades or the Asset does not exist
+     */
     public List<Trade> getAssetTrades(String assetName) {
         try {
             Asset asset = assetService.getAssetByName(assetName);

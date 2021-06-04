@@ -2,6 +2,7 @@ package com.supplyr.supplyr.startup;
 
 import com.supplyr.supplyr.domain.OrganisationalUnit;
 import com.supplyr.supplyr.domain.User;
+import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.OrganisationalUnitService;
 import com.supplyr.supplyr.service.SupplyrUserDetailsService;
@@ -29,13 +30,24 @@ public class StartupApplicationListener {
         this.organisationalUnitService = organisationalUnitService;
     }
 
+    /**
+     * Tasks to be performed on application start up
+     *
+     */
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
+
         offerService.initiateOfferQueue();
 
-        organisationalUnitService.createOrganisationalUnit(new OrganisationalUnit("Supplyr Admin", 100));
+        try {
+            organisationalUnitService.createOrganisationalUnit(new OrganisationalUnit("Supplyr Admin", 100));
 
-        supplyrUserDetailsService.registerNewAdmin(new User("admin", "12345"));
+            supplyrUserDetailsService.registerNewAdmin(new User("admin", "12345"));
+
+        }catch (AlreadyExistsException e){
+           System.out.println("LOADED DATA FROM DATABASE");
+        }
+
 
     }
 

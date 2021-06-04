@@ -127,9 +127,10 @@ public class AssetService {
     }
 
     /**
-     * Add a new instance of an Asset held by an Organisational Unit
+     * Add a an Asset to an Organisational Unit
      *
      * @param assetObject Details of asset to be added
+     * @return OrganisationalUnitAsset added to database
      */
     public OrganisationalUnitAsset addOrganisationalUnitAsset(OrganisationalUnitAssetDto assetObject) {
 
@@ -154,7 +155,7 @@ public class AssetService {
 
     }
 
-
+    // Retrieve Asset from database by ID or Name
     private Optional<Asset> getAssetFromDatabase(OrganisationalUnitAssetDto assetObject) {
         Optional<Asset> optionalAsset;
 
@@ -171,6 +172,7 @@ public class AssetService {
 
     }
 
+    // Retrieve OrganisationalUnit from database by ID or Name
     private Optional<OrganisationalUnit> getOrganisationalUnitFromDatabase(OrganisationalUnitAssetDto assetObject) {
         Optional<OrganisationalUnit> optionalOrganisationalUnit;
         // If ID exists, retrieve by ID

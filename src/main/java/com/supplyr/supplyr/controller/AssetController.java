@@ -29,6 +29,7 @@ public class AssetController {
 
     /**
      * REST endpoint to retrieve a list of all Assets
+     * @return List of all Assets
      */
     @GetMapping("/assets")
     public List<Asset> getAllAssets() {
@@ -61,11 +62,23 @@ public class AssetController {
 
     }
 
+    /**
+     * REST endpoint to a list of trades for a particular asset
+     *
+     * @param asset Asset to receive trades for
+     * @return List of Trades for a particular Asset
+     */
     @GetMapping("/assets/{asset}/trades")
     public List<Trade> getAssetTrades(@PathVariable String asset) {
         return tradeService.getAssetTrades(asset);
     }
 
+    /**
+     * REST endpoint to a list of trades for a particular asset
+     *
+     * @param asset Asset to receive lowest ask and highest bid for
+     * @return lowest ask and highest bid for an asset
+     */
     @GetMapping("/assets/{asset}/offer-info")
     public LowestAskHighestBidDto getLowestAskHighestBid(@PathVariable String asset) {
 

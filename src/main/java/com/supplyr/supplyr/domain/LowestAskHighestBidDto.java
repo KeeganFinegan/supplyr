@@ -1,5 +1,6 @@
 package com.supplyr.supplyr.domain;
 
+// Object to map lowest ask/highest bid to for serialization
 public class LowestAskHighestBidDto {
 
     private double lowestAsk;
