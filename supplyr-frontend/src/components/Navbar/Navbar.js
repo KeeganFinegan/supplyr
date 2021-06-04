@@ -33,17 +33,17 @@ export default function Navbar() {
                 supplyr
             </h1>
             <ul className="nav-menu">
-                {role === 'ROLE_ADMIN'
-                    ? MenuItems.map((item, index) => {
-                        return (
-                            <li key={index}>
-                                <a className={item.cName} href={item.url}>
-                                    {item.title}
-                                </a>
-                            </li>
-                        );
-                    })
-                    : null}
+                {role === 'ROLE_ADMIN' ? <li key={0}>
+                    <a className='nav-links' href={MenuItems[0].url}>
+                        {MenuItems[0].title}
+                    </a>
+                </li> : null }
+
+                <li key={1}>
+                    <a className='nav-links' href={MenuItems[1].url}>
+                        {MenuItems[1].title}
+                    </a>
+                </li>
             </ul>
 
             <div className="menu-icon">
