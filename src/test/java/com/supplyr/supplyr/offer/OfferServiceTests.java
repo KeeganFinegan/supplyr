@@ -12,9 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +46,9 @@ public class OfferServiceTests {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    OfferBook offerBook;
 
     private OrganisationalUnit it;
     private OrganisationalUnit finance;
@@ -376,9 +377,11 @@ public class OfferServiceTests {
         existingOffer.setOrganisationalUnit(it);
         existingOffer.setAsset(cpuHours);
         existingOffer.setId(1L);
+        existingOffer.setType(OfferType.BUY);
 
         when(offerRepository.existsById(1L)).thenReturn(true);
         when(offerRepository.findById(1L)).thenReturn(Optional.of(existingOffer));
+        offerService.addOfferToOfferBook(existingOffer);
 
         assertDoesNotThrow(() -> {
             offerService.deleteOfferById(1L);
