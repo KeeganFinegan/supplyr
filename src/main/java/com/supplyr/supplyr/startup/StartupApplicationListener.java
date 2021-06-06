@@ -32,7 +32,6 @@ public class StartupApplicationListener {
 
     /**
      * Tasks to be performed on application start up
-     *
      */
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
@@ -44,8 +43,8 @@ public class StartupApplicationListener {
 
             supplyrUserDetailsService.registerNewAdmin(new User("admin", "12345"));
 
-        }catch (AlreadyExistsException e){
-           System.out.println("LOADED DATA FROM DATABASE");
+        } catch (AlreadyExistsException e) {
+            System.out.println("LOADED DATA FROM DATABASE");
         }
 
 

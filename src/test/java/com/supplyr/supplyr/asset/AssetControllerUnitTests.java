@@ -3,6 +3,7 @@ package com.supplyr.supplyr.asset;
 
 import com.supplyr.supplyr.controller.AssetController;
 import com.supplyr.supplyr.domain.*;
+import com.supplyr.supplyr.exception.AlreadyExistsException;
 import com.supplyr.supplyr.service.AssetService;
 import com.supplyr.supplyr.service.OfferService;
 import com.supplyr.supplyr.service.TradeService;
@@ -67,6 +68,9 @@ public class AssetControllerUnitTests {
         assertEquals("CPU Hours", newAssetType.getName());
 
     }
+
+
+
 
 
     @Test

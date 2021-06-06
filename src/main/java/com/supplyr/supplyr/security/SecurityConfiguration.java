@@ -80,7 +80,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/api/v1/organisational-unit").hasAnyRole("USER", "ADMIN");
 
 
-
     }
 
     @Bean

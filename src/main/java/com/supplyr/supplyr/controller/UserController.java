@@ -78,6 +78,7 @@ public class UserController {
      * REST endpoint to update the details of User with a given Id
      *
      * @param updatedUser Updated details of User
+     * @param username username of user to be updated
      * @return Updated User
      */
     @PutMapping("/{username}")

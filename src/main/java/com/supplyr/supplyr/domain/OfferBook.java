@@ -2,10 +2,8 @@ package com.supplyr.supplyr.domain;
 
 import com.supplyr.supplyr.service.*;
 import com.supplyr.supplyr.utility.BeanUtility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -69,7 +67,7 @@ public class OfferBook {
     public OfferBook(Long assetId) {
         this.assetId = assetId;
         this.filledOffers = Collections.synchronizedMap(new HashMap<>());
-        this.offerMap =Collections.synchronizedMap(new HashMap<>());
+        this.offerMap = Collections.synchronizedMap(new HashMap<>());
 
         this.buyOffers = new PriorityBlockingQueue<Offer>(10, new COMPARING());
 
@@ -194,13 +192,14 @@ public class OfferBook {
     }
 
     private void executeOfferFromQueue(Offer currentOfferFromQueue, double currentOfferFromQueueQuantity) {
-
+        // If the offer has already been partially filled
         if (filledOffers.containsKey(currentOfferFromQueue.getId())) {
             double newTradeQuantity = filledOffers.get(currentOfferFromQueue
                     .getId()).getQuantity() + currentOfferFromQueueQuantity;
 
             filledOffers.get(currentOfferFromQueue.getId()).setQuantity(newTradeQuantity);
 
+            // If the offer has never been filled
 
         } else {
             filledOffers.put(currentOfferFromQueue.getId(), currentOfferFromQueue);
@@ -302,10 +301,9 @@ public class OfferBook {
 
 
             } catch (CloneNotSupportedException e) {
+                throw new RuntimeException("The system has encountered an error");
 
             }
-        } else {
-
         }
 
     }
@@ -361,11 +359,7 @@ public class OfferBook {
      * @return True if offers are compatible or false if not
      */
     private boolean compatibleOffers(Offer offer1, Offer offer2) {
-        if (offer1.getOrganisationalUnit().getId().equals(offer2.getOrganisationalUnit().getId())) {
-            return false;
-        } else {
-            return true;
-        }
+        return !offer1.getOrganisationalUnit().getId().equals(offer2.getOrganisationalUnit().getId());
     }
 
     private boolean hasEnoughCredits(String organisationalUnitName, double deductionAmount) {

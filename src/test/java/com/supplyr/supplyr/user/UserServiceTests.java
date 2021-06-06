@@ -41,7 +41,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void successfullyNewUser() {
+    public void successfullyAddNewUser() {
 
         User user = new User("Bob", "password");
         OrganisationalUnit organisationalUnit = new OrganisationalUnit();
